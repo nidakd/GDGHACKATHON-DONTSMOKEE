@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
+import { supabase } from './supabaseClient';
 import LawTab from './components/LawTab';
 import PrecedentTab from './components/PrecedentTab';
-import { Bot, Scale, Search, Shield, Sparkles, BookOpen, BrainCircuit, ArrowRight, Loader, ShieldCheck, Download, Gavel, FileText, Users, Clock, Database, Award, ChevronDown } from 'lucide-react';
+import { Menu, X, History,  Bot, Scale, Search, Shield, Sparkles, BookOpen, BrainCircuit, ArrowRight, Loader, ShieldCheck, Download, Gavel, FileText, Users, Clock, Database, Award, ChevronDown } from 'lucide-react';
 import axios from 'axios';
 import html2pdf from 'html2pdf.js';
 
@@ -85,6 +86,10 @@ function RevealOnScroll({ children }) {
 }
 
 function App() {
+  const [user, setUser] = useState(null);
+  const [searchHistory, setSearchHistory] = useState([]);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [showWelcome, setShowWelcome] = useState(false);
   const [query, setQuery] = useState('');
   const [isSearching, setIsSearching] = useState(false);
   const [results, setResults] = useState(null);
@@ -95,12 +100,77 @@ function App() {
   const [scrollY, setScrollY] = useState(0);
 
   useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session }, error }) => {
+      console.log("Initial session:", session, "Error:", error);
+      setUser(session?.user ?? null);
+    });
+
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        console.log("Auth state change:", event, session);
+        if (event === 'SIGNED_IN') {
+          setShowWelcome(true);
+          setTimeout(() => setShowWelcome(false), 4000);
+        }
+        setUser(session?.user ?? null);
+      }
+    );
+
+    return () => {
+      authListener?.subscription?.unsubscribe();
+    };
+  }, []);
+
+  useEffect(() => {
     const handleScroll = () => {
       setScrollY(window.scrollY);
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const fetchHistory = async () => {
+    const { data, error } = await supabase
+      .from('search_history')
+      .select('*')
+      .order('created_at', { ascending: false });
+    if (!error && data) {
+      setSearchHistory(data);
+    }
+  };
+
+  useEffect(() => {
+    if (user) {
+      fetchHistory();
+    } else {
+      setSearchHistory([]);
+    }
+  }, [user]);
+
+  const loadHistoryItem = (item) => {
+    setQuery(item.query);
+    setResults({ lawsMarkdown: item.law_result, precedentsMarkdown: item.precedent_result });
+    setIsSidebarOpen(false);
+    setTimeout(() => {
+      if (searchRef.current) {
+        searchRef.current.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 100);
+  };
+
+  const handleGoogleLogin = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: window.location.origin,
+      }
+    });
+    if (error) console.error("Login failed", error.message);
+  };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+  };
 
   const handleExportPDF = () => {
     if (pdfRef.current) {
@@ -113,6 +183,29 @@ function App() {
       };
       html2pdf().set(opt).from(pdfRef.current).save();
     }
+  };
+
+  const streamEndpoint = async (url, queryText, setPartialContent) => {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ olay_metni: queryText })
+    });
+    
+    if (!response.ok) throw new Error("Ağ hatası");
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder('utf-8');
+    let fullText = '';
+
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      const chunk = decoder.decode(value, { stream: true });
+      fullText += chunk;
+      setPartialContent(fullText);
+    }
+    return fullText;
   };
 
   const handleSearch = async (e) => {
@@ -128,15 +221,39 @@ function App() {
     }
 
     try {
-      const [lawRes, precedentRes] = await Promise.all([
-        axios.post('http://127.0.0.1:8000/api/laws', { olay_metni: query }),
-        axios.post('http://127.0.0.1:8000/api/precedents', { olay_metni: query })
-      ]);
-
+      // Başlangıçta boş değerlerle sekmeleri göster
       setResults({
-        lawsMarkdown: lawRes.data.kanunlar,
-        precedentsMarkdown: precedentRes.data.emsaller,
+        lawsMarkdown: 'Analiz başlatılıyor...',
+        precedentsMarkdown: 'Emsaller aranıyor...'
       });
+
+      const lawsPromise = streamEndpoint('http://127.0.0.1:8000/api/laws/stream', query, (text) => {
+        setResults(prev => prev ? { ...prev, lawsMarkdown: text } : null);
+      });
+      
+      const precedentsPromise = streamEndpoint('http://127.0.0.1:8000/api/precedents/stream', query, (text) => {
+        setResults(prev => prev ? { ...prev, precedentsMarkdown: text } : null);
+      });
+
+      // İki bağımsız stream'in tamamen bitmesini bekle
+      const [finalLaws, finalPrecedents] = await Promise.all([lawsPromise, precedentsPromise]);
+
+      // Streamler bitince Supabase'e kaydet
+      if (user) {
+        const { data, error } = await supabase.from('search_history').insert([
+          {
+            user_id: user.id,
+            query: query,
+            law_result: finalLaws,
+            precedent_result: finalPrecedents
+          }
+        ]).select();
+        if (!error && data) {
+          setSearchHistory(prev => [data[0], ...prev]);
+        } else {
+          console.error("Supabase Kayıt Hatası:", error);
+        }
+      }
 
     } catch (err) {
       setError('Arama sırasında bir hata oluştu. Lütfen arka plan servisinizin çalıştığından emin olun.');
@@ -148,7 +265,51 @@ function App() {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 selection:bg-[#FFC000]/30 selection:text-[#9C1A15] relative" style={{ fontFamily: '"Times New Roman", Times, serif' }}>
+      {/* HOŞGELDİN TOAST (POPUP) BİLDİRİMİ */}
+      <div className={`fixed top-24 right-4 z-50 bg-white border border-[#9C1A15]/20 shadow-2xl rounded-xl p-4 flex items-center space-x-4 transform transition-all duration-500 ${showWelcome ? 'translate-x-0 opacity-100' : 'translate-x-12 opacity-0 pointer-events-none'}`}>
+        {user?.user_metadata?.avatar_url ? (
+           <img src={user.user_metadata.avatar_url} referrerPolicy="no-referrer" alt="Avatar" className="w-12 h-12 rounded-full border border-[#FFC000] object-cover" />
+        ) : (
+           <div className="bg-[#9C1A15]/10 p-2 rounded-full"><Sparkles className="text-[#9C1A15]" size={24} /></div>
+        )}
+        <div>
+          <h4 className="text-base font-bold text-[#9C1A15]" style={{ fontFamily: '"Times New Roman", Times, serif' }}>
+            Hoşgeldin, {user?.user_metadata?.full_name?.split(' ')[0] || 'Kullanıcı'}!
+          </h4>
+          <p className="text-xs text-slate-500 font-sans mt-1">Emsal.AI'a başarıyla giriş yaptınız.</p>
+        </div>
+      </div>
+
       
+
+      {/* SIDEBAR (HISTORY) */}
+      <div className={`fixed inset-0 bg-slate-900/40 z-[60] backdrop-blur-sm transition-opacity duration-300 ${isSidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} onClick={() => setIsSidebarOpen(false)}></div>
+      <div className={`fixed top-0 left-0 w-80 sm:w-96 h-full bg-white z-[70] shadow-2xl transform transition-transform duration-300 flex flex-col ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+        <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+          <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2"><History size={20} className="text-[#9C1A15]" /> Geçmiş Sorgular</h2>
+          <button onClick={() => setIsSidebarOpen(false)} className="text-slate-400 hover:text-slate-800 p-1 rounded-md transition-colors"><X size={24}/></button>
+        </div>
+        <div className="flex-1 overflow-y-auto p-4 space-y-3">
+          {!user ? (
+             <div className="text-center text-sm text-slate-500 mt-10">Geçmişi görmek için giriş yapın.</div>
+          ) : searchHistory.length === 0 ? (
+             <div className="text-center text-sm text-slate-500 mt-10 p-6 bg-slate-50 rounded-xl border border-dashed border-slate-200">
+               Burada henüz işlem bulunmuyor.<br/><br/>Hemen bir hukuki olay aratın!
+             </div>
+          ) : (
+            searchHistory.map((item) => (
+              <div key={item.id} onClick={() => loadHistoryItem(item)} className="p-4 border border-slate-200 rounded-xl hover:border-[#9C1A15]/40 hover:bg-slate-50 hover:shadow-sm cursor-pointer transition-all group relative overflow-hidden">
+                 <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#9C1A15] transform -translate-x-full group-hover:translate-x-0 transition-transform"></div>
+                 <p className="text-sm font-medium text-slate-700 line-clamp-3 group-hover:text-[#9C1A15] transition-colors leading-relaxed">{item.query}</p>
+                 <p className="text-xs text-slate-400 mt-3 flex items-center gap-1 font-sans">
+                   {new Date(item.created_at).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                 </p>
+              </div>
+            ))
+          )}
+        </div>
+      </div>
+
       {/* GLOBAL SABİT ARKA PLAN YAZISI (PARALLAX + İTALİK FONT) */}
       <div className="fixed inset-0 flex items-center justify-center pointer-events-none select-none z-0 opacity-[0.04] overflow-hidden">
         <span 
@@ -168,16 +329,47 @@ function App() {
       <nav className="fixed top-0 w-full z-50 bg-white/90 backdrop-blur-md border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-2">
-              <div className="bg-gradient-to-br from-[#9C1A15] to-[#7a1410] p-2 rounded-lg text-white shadow-lg shadow-[#9C1A15]/30">
-                <Scale size={24} />
+            <div className="flex items-center space-x-4">
+              {user && (
+                <button onClick={() => setIsSidebarOpen(true)} className="text-slate-600 hover:text-[#9C1A15] transition-colors p-2 -ml-2 focus:outline-none">
+                  <Menu size={26} />
+                </button>
+              )}
+              <div className="flex items-center space-x-2">
+                <div className="bg-gradient-to-br from-[#9C1A15] to-[#7a1410] p-2 rounded-lg text-white shadow-lg shadow-[#9C1A15]/30">
+                  <Scale size={24} />
+                </div>
+                <span className="text-2xl font-bold text-[#9C1A15]" style={{ fontFamily: '"Times New Roman", Times, serif' }}>
+                  Emsal.AI
+                </span>
               </div>
-              <span className="text-2xl font-bold text-[#9C1A15]" style={{ fontFamily: '"Times New Roman", Times, serif' }}>
-                Emsal.AI
-              </span>
             </div>
-            <div className="hidden md:flex items-center space-x-8">
+            <div className="hidden md:flex items-center space-x-6">
               <a href="#arama-motorlari" className="text-lg font-bold text-slate-600 hover:text-[#9C1A15] transition-colors">Nasıl Çalışır?</a>
+              {user ? (
+                <div className="flex items-center space-x-4 ml-4 pl-4 border-l border-slate-300">
+                  {user.user_metadata?.avatar_url && (
+                    <img src={user.user_metadata.avatar_url} referrerPolicy="no-referrer" alt="Profil" className="w-10 h-10 rounded-full border-2 border-[#9C1A15] shadow-sm object-cover" />
+                  )}
+                  <div className="flex flex-col">
+                    <span className="text-slate-800 font-bold text-sm">{user.user_metadata?.full_name || user.email?.split('@')[0]}</span>
+                    <button 
+                      onClick={handleLogout}
+                      className="text-xs text-slate-500 hover:text-[#9C1A15] text-left transition-colors font-medium mt-0.5"
+                    >
+                      Çıkış Yap
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <button 
+                  onClick={handleGoogleLogin}
+                  className="flex items-center gap-2 px-4 py-2 text-sm font-semibold bg-white text-slate-700 rounded-lg shadow-sm border border-slate-200 hover:bg-slate-50 transition-colors"
+                >
+                  <img src="https://www.google.com/favicon.ico" alt="Google" className="w-4 h-4" />
+                  Google ile Giriş Yap
+                </button>
+              )}
             </div>
           </div>
         </div>
