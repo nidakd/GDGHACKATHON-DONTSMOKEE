@@ -2,12 +2,14 @@ import { useState, useRef } from 'react';
 import LawTab from './components/LawTab';
 import PrecedentTab from './components/PrecedentTab';
 import { Bot, Scale, Search, Shield, Sparkles, BookOpen, BrainCircuit, ArrowRight, Loader } from 'lucide-react';
+import axios from 'axios';
 
 function App() {
   const [query, setQuery] = useState('');
   const [isSearching, setIsSearching] = useState(false);
   const [results, setResults] = useState(null);
-  
+  const [error, setError] = useState('');
+
   const searchRef = useRef(null);
 
   const handleSearch = async (e) => {
@@ -16,37 +18,31 @@ function App() {
 
     setIsSearching(true);
     setResults(null);
-    
-    // Ekranda arama kısmına odaklanma (Kaydırma)
-    searchRef.current.scrollIntoView({ behavior: 'smooth' });
+    setError('');
 
-    // Simülasyon
-    setTimeout(() => {
+    // Ekranda arama kısmına odaklanma (Kaydırma)
+    if (searchRef.current) {
+        searchRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    try {
+      // Backend'deki her iki endpoint'e olay metni (query) atılır
+      const [lawRes, precedentRes] = await Promise.all([
+        axios.post('http://127.0.0.1:8000/api/laws', { olay_metni: query }),
+        axios.post('http://127.0.0.1:8000/api/precedents', { olay_metni: query })
+      ]);
+
       setResults({
-        laws: [
-          {
-            title: "Türk Borçlar Kanunu - Madde 67",
-            description: "Hayvan bulunduranın sorumluluğu. Bir hayvanın bakımını üstlenen kişi, hayvanın başkasına verdiği zararı gidermekle yükümlüdür.",
-            relevance: "Yüksek",
-          }
-        ],
-        precedents: [
-          {
-            summary: "Yargıtay 3. Hukuk Dairesi, 2018/1429 E., 2019/3310 K.",
-            details: "Köpeğin tasmasız dolaştırılması sebebiyle üçüncü kişilere verilen zararda, hayvan sahibinin gerekli özen yükümlülüğünü yerine getirmemiş olması nedeniyle tazminat ödemesine hükmedilmiştir.",
-            matchRate: "%92 Eşleşme",
-            isMain: true
-          },
-          {
-            summary: "Yargıtay 4. Hukuk Dairesi, 2015/842 E.",
-            details: "Hayvanın verdiği zarar nedeniyle hayvan güdücüsünün sadece tedbir almadığı için sorumlu tutulabileceği durumu.",
-            matchRate: "%75 Eşleşme",
-            isMain: false
-          }
-        ]
+        lawsMarkdown: lawRes.data.kanunlar,
+        precedentsMarkdown: precedentRes.data.emsaller,
       });
+
+    } catch (err) {
+      setError('Arama sırasında bir hata oluştu. Lütfen arka plan servisinizin çalıştığından emin olun.');
+      console.error(err);
+    } finally {
       setIsSearching(false);
-    }, 2500);
+    }
   };
 
   return (
@@ -176,16 +172,16 @@ function App() {
                 <button
                   type="submit"
                   disabled={isSearching || !query.trim()}
-                  className="bg-slate-900 hover:bg-slate-800 disabled:bg-slate-300 text-white px-6 py-3 rounded-xl font-medium flex items-center space-x-2 transition-colors disabled:cursor-not-allowed"
+                  className="bg-[#9c1422] hover:bg-[#7a0f1a] disabled:bg-slate-300 text-white px-6 py-3 rounded-xl font-medium flex items-center space-x-2 transition-colors disabled:cursor-not-allowed shadow-lg shadow-[#9c1422]/20"
                 >
                   {isSearching ? (
                     <>
-                      <Loader size={18} className="animate-spin" />
+                      <Loader size={18} className="animate-spin text-white" />
                       <span>Analiz Ediliyor...</span>
                     </>
                   ) : (
                     <>
-                      <Search size={18} />
+                      <Search size={18} className="text-white" />
                       <span>Emsal Bul</span>
                     </>
                   )}
@@ -198,10 +194,15 @@ function App() {
           <div className={`mt-12 transition-all duration-700 ease-out origin-top ${results || isSearching ? 'opacity-100 scale-100' : 'opacity-0 scale-95 h-0 overflow-hidden'}`}>
             
             {isSearching && (
-              <div className="flex flex-col items-center justify-center py-16 text-center bg-blue-50/50 rounded-3xl border border-blue-100">
-                <Bot size={48} className="text-blue-500 animate-bounce mb-6" />
-                <h3 className="text-2xl font-semibold text-slate-800 mb-2">Yapay Zeka Çalışıyor</h3>
-                <p className="text-slate-500 max-w-sm animate-pulse">Kanun maddeleri çıkarılıyor ve Yargıtay arşivleri taranarak en uygun emsal karar bulunuyor...</p>
+              <div className="flex items-center justify-center p-8 bg-transparent">
+                <div className="flex flex-col items-center space-y-4">
+                  <div className="flex space-x-2">
+                    <div className="w-3 h-3 bg-[#9c1422] rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                    <div className="w-3 h-3 bg-[#9c1422] rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                    <div className="w-3 h-3 bg-[#9c1422] rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                  </div>
+                  <p className="text-sm font-medium text-slate-500 animate-pulse">Kanun maddeleri ve emsal kararlar analiz ediliyor...</p>
+                </div>
               </div>
             )}
 
@@ -217,12 +218,12 @@ function App() {
                 <div className="grid md:grid-cols-12 gap-8">
                   {/* Kanunlar (Sol Kolon) */}
                   <div className="md:col-span-5 relative">
-                    <LawTab laws={results.laws} />
+                    <LawTab markdown={results.lawsMarkdown} />
                   </div>
                   
                   {/* Emsal Kararlar (Sağ Kolon) */}
                   <div className="md:col-span-7">
-                    <PrecedentTab precedents={results.precedents} />
+                    <PrecedentTab markdown={results.precedentsMarkdown} />
                   </div>
                 </div>
 

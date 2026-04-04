@@ -1,53 +1,33 @@
-import { Star, ShieldAlert } from 'lucide-react';
+import { Star, ShieldAlert, Scale } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
 
-export default function PrecedentTab({ precedents }) {
-  if (!precedents || precedents.length === 0) return <p className="text-slate-500">Uygun emsal karar bulunamadı.</p>;
-
-  // Hlavní emsal (Baş Karar)
-  const mainPrecedent = precedents.find((p) => p.isMain);
-  // Alternatifler
-  const alternativePrecedents = precedents.filter((p) => !p.isMain);
+export default function PrecedentTab({ markdown }) {
+  if (!markdown) return <p className="text-slate-500">Uygun emsal karar bulunamadı.</p>;
 
   return (
     <div className="space-y-8">
-      {/* Baş Karar (Emsal) */}
-      {mainPrecedent && (
-        <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-6 border border-amber-200 shadow-md">
-          <div className="flex items-center space-x-2 text-amber-700 mb-4 bg-amber-100 w-max px-3 py-1 rounded-full text-sm font-semibold shadow-sm">
-            <Star size={16} />
-            <span>En Yüksek Eşleşme ({mainPrecedent.matchRate})</span>
-          </div>
-          <h2 className="text-xl font-bold font-serif text-slate-800">{mainPrecedent.summary}</h2>
-          <p className="mt-4 text-slate-700 leading-relaxed text-sm bg-white/60 p-4 rounded-xl shadow-inner border border-amber-100">
-            "{mainPrecedent.details}"
-          </p>
-          <div className="mt-6">
-            <h4 className="font-semibold text-slate-800 text-sm">Gemini Analizi:</h4>
-            <p className="text-sm text-slate-600 mt-2">Bu karar, hayvanın bakımını üstlenen kişinin sorumluluğunu doğurduğu için olayınızla %92 oranında örtüşmektedir.</p>
-          </div>
-        </div>
-      )}
+      <h2 className="text-xl font-bold font-serif text-amber-700 mb-4 flex items-center gap-2">
+        <Scale size={24} className="text-amber-500" /> Emsal Kararlar ve AI Yorumu
+      </h2>
 
-      {/* Alternatif Görüşler */}
-      {alternativePrecedents.length > 0 && (
-        <div>
-          <h3 className="text-lg font-semibold font-serif text-slate-700 flex items-center gap-2 mb-4 border-b pb-2">
-            <ShieldAlert size={20} className="text-slate-400" />
-            Alternatif Görüşler
-          </h3>
-          <div className="grid gap-4 md:grid-cols-2">
-            {alternativePrecedents.map((prec, index) => (
-              <div key={index} className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:border-blue-200 transition-colors">
-                <div className="flex justify-between items-start mb-2">
-                  <h4 className="font-medium text-slate-800 text-sm line-clamp-2">{prec.summary}</h4>
-                  <span className="text-xs bg-slate-100 text-slate-600 px-2 py-1 rounded-md font-medium">{prec.matchRate}</span>
-                </div>
-                <p className="text-slate-500 text-xs mt-2 line-clamp-3">"{prec.details}"</p>
-              </div>
-            ))}
-          </div>
+      <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-6 md:p-8 border border-amber-200 shadow-md hover:shadow-lg transition-shadow">
+        <div className="prose max-w-none prose-slate 
+            prose-headings:text-amber-800 prose-h2:text-xl prose-h3:text-lg 
+            prose-p:leading-relaxed prose-p:text-sm prose-strong:text-slate-800 
+            prose-ul:bg-white/60 prose-ul:p-6 prose-ul:rounded-xl prose-ul:border prose-ul:border-amber-100
+            prose-li:my-2 prose-li:text-sm
+            prose-blockquote:border-l-amber-500 prose-blockquote:bg-amber-100/50 prose-blockquote:p-4 prose-blockquote:rounded-r-lg prose-blockquote:italic">
+          <ReactMarkdown>{markdown}</ReactMarkdown>
         </div>
-      )}
+
+        {/* Disclaimer Section integrated directly like in original design intent */}
+        <div className="mt-8 flex items-start gap-4 p-4 bg-white/60 rounded-xl border border-amber-200/60">
+           <ShieldAlert size={20} className="text-amber-600 flex-shrink-0 mt-0.5" />
+           <div>
+              <p className="text-xs text-amber-800/80 font-medium">Bu platform bir "Hakim" veya "Avukat" değildir, yalnızca bir "Araştırma Asistanı"dır. Çıkan sonuçlar sadece yasal süreç incelemelerini desteklemek amaçlıdır.</p>
+           </div>
+        </div>
+      </div>
     </div>
   );
 }
