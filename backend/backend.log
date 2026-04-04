@@ -22,3 +22,17 @@ https://github.com/google-gemini/deprecated-generative-ai-python/blob/main/READM
 INFO:     Started server process [23224]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
+INFO:     127.0.0.1:63018 - "POST /api/laws HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63019 - "POST /api/precedents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63468 - "OPTIONS /api/laws HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63469 - "OPTIONS /api/precedents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63469 - "POST /api/laws HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63468 - "POST /api/precedents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64178 - "POST /api/laws HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64231 - "POST /api/precedents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64504 - "POST /api/laws HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64505 - "POST /api/precedents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49322 - "OPTIONS /api/laws HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49323 - "OPTIONS /api/precedents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49323 - "POST /api/laws HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49322 - "POST /api/precedents HTTP/1.1" 200 OK
