@@ -691,27 +691,27 @@ function App() {
           </div>
 
           <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
-            <div className="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-xl transition-shadow duration-300 relative overflow-hidden group">
+            <div className="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-2xl hover:shadow-[#9C1A15]/10 dark:hover:shadow-red-500/10 hover:border-[#9C1A15]/30 dark:hover:border-red-500/30 hover:-translate-y-2 transition-all duration-500 ease-[cubic-bezier(0.25,0.1,0.25,1.0)] relative overflow-hidden group">
               <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity text-[#9C1A15] dark:text-red-400">
                 <BookOpen size={120} />
               </div>
-              <div className="bg-[#9C1A15]/10 dark:bg-red-500/20 w-16 h-16 rounded-2xl flex items-center justify-center mb-6 text-[#9C1A15] dark:text-red-400">
+              <div className="bg-[#9C1A15]/10 dark:bg-red-500/20 w-16 h-16 rounded-2xl flex items-center justify-center mb-6 text-[#9C1A15] dark:text-red-400 transform group-hover:scale-110 transition-transform duration-500 ease-out">
                 <BookOpen size={32} />
               </div>
-              <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-200 mb-3">1. Kanun Motoru</h3>
+              <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-200 mb-3 group-hover:text-[#9C1A15] dark:group-hover:text-red-400 transition-colors duration-300">1. Kanun Motoru</h3>
               <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
                 Yazdığınız olayı anlamsal (semantic) olarak tarar. Olayın direkt hangi kanun, yönetmelik veya madde kapsamına girdiğini tespit eder.
               </p>
             </div>
 
-            <div className="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-xl transition-shadow duration-300 relative overflow-hidden group">
+            <div className="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-2xl hover:shadow-[#9C1A15]/10 dark:hover:shadow-red-500/10 hover:border-[#9C1A15]/30 dark:hover:border-red-500/30 hover:-translate-y-2 transition-all duration-500 ease-[cubic-bezier(0.25,0.1,0.25,1.0)] relative overflow-hidden group">
               <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity text-[#9C1A15] dark:text-red-400">
                 <BrainCircuit size={120} />
               </div>
-              <div className="bg-[#9C1A15]/10 dark:bg-red-500/20 w-16 h-16 rounded-2xl flex items-center justify-center mb-6 text-[#9C1A15] dark:text-red-400">
+              <div className="bg-[#9C1A15]/10 dark:bg-red-500/20 w-16 h-16 rounded-2xl flex items-center justify-center mb-6 text-[#9C1A15] dark:text-red-400 transform group-hover:scale-110 transition-transform duration-500 ease-out">
                 <BrainCircuit size={32} />
               </div>
-              <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-200 mb-3">2. Emsal & Analiz Motoru <span className="text-sm font-bold bg-gradient-to-r from-[#9C1A15] to-[#7a1410] text-[#FFC000] dark:text-yellow-400 px-2 py-1 rounded-md ml-2 align-middle">Gemini</span></h3>
+              <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-200 mb-3 group-hover:text-[#9C1A15] dark:group-hover:text-red-400 transition-colors duration-300">2. Emsal & Analiz Motoru <span className="text-sm font-bold bg-gradient-to-r from-[#9C1A15] to-[#7a1410] text-[#FFC000] dark:text-yellow-400 px-2 py-1 rounded-md ml-2 align-middle">Gemini</span></h3>
               <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
                 Google Search entegreli (Grounding) yeteneğiyle web'den emsalleri çeker. En yüksek eşleşme oranına sahip kararı "Baş Karar" olarak analiz ederek size sunar.
               </p>
