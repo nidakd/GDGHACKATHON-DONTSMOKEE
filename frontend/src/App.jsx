@@ -559,21 +559,34 @@ function App() {
 
                   {/* PDF İÇİN REF ALANI */}
                   {/* Geri plan rengi beyaz */}
-                  <div id="pdf-content" ref={pdfRef} className="grid md:grid-cols-12 gap-8 p-6 bg-white dark:bg-slate-800 rounded-2xl print:block print:bg-white print:text-black">
-                    {/* Kanunlar (Sol Kolon) */}
-                    <div className="md:col-span-4 relative print:w-full print:mb-8">
+                  <div id="pdf-content" ref={pdfRef} className="grid md:grid-cols-12 gap-8 p-6 bg-white dark:bg-slate-800 rounded-2xl print:flex print:flex-col print:bg-white print:text-black print:p-0">
+                    
+                    {/* YALNIZCA PDF/YAZDIRMA EKRANINDA GÖZÜKEN BAŞLIK */}
+                    <div className="hidden print:block text-center border-b border-slate-300 pb-6 mb-8 mt-4">
+                      <h1 className="text-3xl font-bold font-serif text-slate-900 mb-2">Emsal.AI - Hukuki Analiz Raporu</h1>
+                      <p className="text-sm text-slate-500">Google Gemini altyapısı ile hazırlanan yapay zeka destekli emsal ve kanun madde tespit dökümanıdır.</p>
+                    </div>
+
+                    {/* Kanunlar (Sol Kolon -> PDF'te Üst Bölüm) */}
+                    <div className="md:col-span-4 relative print:w-full print:mb-10">
+                      <div className="hidden print:block mb-4">
+                        <h2 className="text-xl font-bold text-[#9C1A15] border-b border-[#9C1A15] pb-2 inline-block">1. Kanun Maddeleri ve Yasal Dayanaklar</h2>
+                      </div>
                       <LawTab markdown={results.lawsMarkdown} />
                     </div>
                     
-                    {/* Emsal Kararlar (Sağ Kolon) */}
-                    <div className="md:col-span-8 flex flex-col print:w-full print:border-t print:pt-8 print:border-slate-300">
+                    {/* Emsal Kararlar (Sağ Kolon -> PDF'te Alt Bölüm) */}
+                    <div className="md:col-span-8 flex flex-col print:w-full print:border-t-2 print:border-slate-200 print:pt-10">
+                      <div className="hidden print:block mb-4">
+                        <h2 className="text-xl font-bold text-[#9C1A15] border-b border-[#9C1A15] pb-2 inline-block">2. Emsal Kararlar ve Yargıtay/Danıştay İçtihatları</h2>
+                      </div>
                       <div className="flex-1">
                         <PrecedentTab markdown={results.precedentsMarkdown} />
                       </div>
                       
                       {/* Emsal Altı Özel Butonlar */}
                       {results && !isSearching && (
-                        <div className="mt-6 flex flex-wrap gap-4 pt-4 border-t border-slate-100 dark:border-slate-800 justify-end">
+                        <div className="mt-6 flex flex-wrap gap-4 pt-4 border-t border-slate-100 dark:border-slate-800 justify-end print:hidden">
                           <button 
                             onClick={handleMoreDetails}
                             className="bg-[#9C1A15]/10 dark:bg-red-500/20 text-[#9C1A15] dark:text-red-400 hover:bg-[#9C1A15]/20 font-bold px-4 py-2 rounded-xl transition-colors shadow-sm flex items-center text-sm"
