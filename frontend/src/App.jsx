@@ -413,22 +413,22 @@ function App() {
       </div>
 
       {/* GLOBAL SABİT ARKA PLAN YAZISI (PARALLAX + İTALİK FONT) */}
-      <div className="fixed inset-0 flex items-center justify-center pointer-events-none select-none z-0 opacity-[0.04] overflow-hidden">
+      <div className="fixed inset-0 flex items-center justify-center pointer-events-none select-none z-0 opacity-10 dark:opacity-5 overflow-hidden">
         <span 
-          className="text-[#9C1A15] dark:text-red-400 font-bold italic text-center px-4 whitespace-nowrap"
+          className="text-slate-200 dark:text-white font-bold italic text-center px-4 whitespace-nowrap"
           style={{ 
-            fontSize: 'clamp(2.5rem, 7vw, 9rem)', 
+            fontSize: 'clamp(2.5rem, 8vw, 10rem)', 
             fontFamily: '"Georgia", "Times New Roman", serif', 
-            transform: `translateY(${-scrollY * 0.15}px) skewX(-15deg)` 
+            transform: `translateY(${-scrollY * 0.20}px) skewX(-15deg)` 
           }}
         >
-          Adalet Mülkün Temelidir.
+          Adalet Mülkün Temelidir
         </span>
       </div>
 
       
       {/* HEADER / NAVBAR */}
-      <nav className="fixed top-0 w-full z-50 bg-white/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-700">
+      <nav className="fixed top-0 w-full z-50 bg-white/90 dark:bg-slate-950/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-4">
@@ -621,16 +621,16 @@ function App() {
                   <button
                     type="submit"
                     disabled={isSearching || !query.trim()}
-                    className="bg-[#9C1A15] hover:bg-[#7a1410] disabled:bg-slate-300 text-white px-8 py-3.5 rounded-xl font-bold flex items-center space-x-2 transition-colors disabled:cursor-not-allowed shadow-lg shadow-[#9C1A15]/20"
+                    className="group bg-gradient-to-r from-[#9C1A15] to-[#7a1410] hover:from-[#7a1410] hover:to-[#5c0f0c] dark:from-[#FFC000] dark:to-yellow-500 disabled:from-slate-300 disabled:to-slate-300 dark:disabled:from-slate-700 dark:disabled:to-slate-700 text-white dark:text-slate-950 dark:disabled:text-slate-500 px-8 py-3.5 rounded-xl font-extrabold flex items-center space-x-2 transition-all disabled:cursor-not-allowed shadow-lg hover:shadow-xl shadow-[#9C1A15]/20 dark:shadow-[#FFC000]/10 hover:-translate-y-0.5"
                   >
                     {isSearching ? (
                       <>
-                        <Loader size={18} className="animate-spin text-white" />
+                        <Loader size={18} className="animate-spin" />
                         <span>Analiz Ediliyor...</span>
                       </>
                     ) : (
                       <>
-                        <Search size={18} className="text-[#FFC000] dark:text-yellow-400" />
+                        <Search size={18} className="text-[#FFC000] dark:text-slate-950 group-hover:scale-110 transition-transform" />
                         <span>Emsal Bul</span>
                       </>
                     )}
@@ -721,40 +721,64 @@ function App() {
       </section>
 
       {/* YENİ BÖLÜM: TEKNOLOJİK ALTYAPI VE METODOLOJİ */}
-      <section className="py-20 bg-[#8A1712] text-white relative overflow-hidden">
+      <section className="py-24 bg-white dark:bg-slate-900 border-y border-slate-100 dark:border-slate-800 relative z-10">
         <RevealOnScroll>
-        <div className="absolute top-0 right-0 w-64 h-64 bg-white dark:bg-slate-800 opacity-5 rounded-full blur-3xl transform translate-x-1/2 -translate-y-1/2"></div>
         <div className="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <h2 className="text-3xl font-bold text-center text-[#FFC000] dark:text-yellow-400 mb-12" style={{ fontFamily: '"Times New Roman", Times, serif' }}>Sistemin Teknolojik Altyapısı</h2>
-          <div className="grid md:grid-cols-4 gap-8 text-center divide-y md:divide-y-0 md:divide-x divide-white/20">
-            <div className="p-4">
-              <div className="flex justify-center mb-4 text-[#FFC000] dark:text-yellow-400"><Award size={40} /></div>
-              <h3 className="text-xl md:text-2xl font-bold mb-2" style={{ fontFamily: '"Times New Roman", Times, serif' }}>
+          <div className="text-center mb-16">
+             <div className="inline-flex items-center space-x-2 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-4 py-1.5 rounded-full text-sm font-bold mb-6 border border-blue-200 dark:border-blue-800/50">
+               <Database size={16} />
+               <span>Altyapı</span>
+             </div>
+             <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-4" style={{ fontFamily: '"Times New Roman", Times, serif' }}>
+               Sistemin Teknolojik Gücü
+             </h2>
+             <p className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+               Yüksek performanslı veri işleme ve tamamen hukuk dikeyine odaklanmış yapay zeka entegrasyonu ile en karmaşık kararlarda bile stabilite.
+             </p>
+          </div>
+
+          <div className="grid md:grid-cols-4 gap-8 lg:gap-12">
+            
+            <div className="bg-slate-50 dark:bg-slate-800/50 rounded-3xl p-8 border border-slate-100 dark:border-slate-700/50 hover:shadow-xl dark:hover:shadow-black/30 transition-all hover:-translate-y-1">
+              <div className="w-14 h-14 bg-white dark:bg-slate-700 rounded-2xl flex items-center justify-center text-[#9C1A15] dark:text-red-400 mb-6 shadow-sm border border-slate-100 dark:border-slate-600">
+                <Award size={26} />
+              </div>
+              <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-3" style={{ fontFamily: '"Times New Roman", Times, serif' }}>
                 Üretken Yapay Zeka
               </h3>
-              <p className="text-white/80 text-sm md:text-base">Mevzuat ve emsal kararlar, Gemini LLM (Large Language Model) altyapısı ile anlam bilimsel (semantik) olarak işlenir.</p>
+              <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">Mevzuat ve emsal kararlar, Gemini LLM altyapısı ile sadece anahtar kelime değil "anlam bilimsel" (semantik) olarak işlenir.</p>
             </div>
-            <div className="p-4 pt-8 md:pt-4">
-              <div className="flex justify-center mb-4 text-[#FFC000] dark:text-yellow-400"><Database size={40} /></div>
-              <h3 className="text-xl md:text-2xl font-bold mb-2" style={{ fontFamily: '"Times New Roman", Times, serif' }}>
+
+            <div className="bg-slate-50 dark:bg-slate-800/50 rounded-3xl p-8 border border-slate-100 dark:border-slate-700/50 hover:shadow-xl dark:hover:shadow-black/30 transition-all hover:-translate-y-1">
+              <div className="w-14 h-14 bg-white dark:bg-slate-700 rounded-2xl flex items-center justify-center text-[#9C1A15] dark:text-red-400 mb-6 shadow-sm border border-slate-100 dark:border-slate-600">
+                <Database size={26} />
+              </div>
+              <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-3" style={{ fontFamily: '"Times New Roman", Times, serif' }}>
                 Vektörel Analiz
               </h3>
-              <p className="text-white/80 text-sm md:text-base">Anahtar kelime yerine, uyuşmazlığın hukuki bağlamını kavrayan embedding (vektör) tabanlı tarama metodolojisi uygulanır.</p>
+              <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">Standart aramalardaki harf eşleşmeleri terk edilir. Uyuşmazlığın bağlamı vektör (embedding) modelinde analiz edilir.</p>
             </div>
-            <div className="p-4 pt-8 md:pt-4">
-              <div className="flex justify-center mb-4 text-[#FFC000] dark:text-yellow-400"><Clock size={40} /></div>
-              <h3 className="text-xl md:text-2xl font-bold mb-2" style={{ fontFamily: '"Times New Roman", Times, serif' }}>
+
+            <div className="bg-slate-50 dark:bg-slate-800/50 rounded-3xl p-8 border border-slate-100 dark:border-slate-700/50 hover:shadow-xl dark:hover:shadow-black/30 transition-all hover:-translate-y-1">
+              <div className="w-14 h-14 bg-white dark:bg-slate-700 rounded-2xl flex items-center justify-center text-blue-600 dark:text-blue-400 mb-6 shadow-sm border border-slate-100 dark:border-slate-600">
+                <Clock size={26} />
+              </div>
+              <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-3" style={{ fontFamily: '"Times New Roman", Times, serif' }}>
                 Asenkron Mimari
               </h3>
-              <p className="text-white/80 text-sm md:text-base">FastAPI tabanlı mikroservis mimarisi ile veri işleme süreçleri optimize edilerek anında geri bildirim sağlanır.</p>
+              <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">FastAPI tabanlı SSE (Streaming) akışı ile sonuçlar saniyeler beklemeden, buldukça real-time olarak arayüze basılır.</p>
             </div>
-            <div className="p-4 pt-8 md:pt-4">
-              <div className="flex justify-center mb-4 text-[#FFC000] dark:text-yellow-400"><ShieldCheck size={40} /></div>
-              <h3 className="text-xl md:text-2xl font-bold mb-2" style={{ fontFamily: '"Times New Roman", Times, serif' }}>
+
+            <div className="bg-slate-50 dark:bg-slate-800/50 rounded-3xl p-8 border border-slate-100 dark:border-slate-700/50 hover:shadow-xl dark:hover:shadow-black/30 transition-all hover:-translate-y-1">
+              <div className="w-14 h-14 bg-white dark:bg-slate-700 rounded-2xl flex items-center justify-center text-amber-500 dark:text-amber-400 mb-6 shadow-sm border border-slate-100 dark:border-slate-600">
+                <ShieldCheck size={26} />
+              </div>
+              <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-3" style={{ fontFamily: '"Times New Roman", Times, serif' }}>
                 Çift Yönlü Doğrulama
               </h3>
-              <p className="text-white/80 text-sm md:text-base">Bulunan sonuçlar; güncel kanun maddeleri ve emsal yargı kararları eşleştirilerek halüsinasyon riskine karşı filtrelenir.</p>
+              <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">Kararların sahte olma ihtimaline karşın internetten veri topraklaması (Grounding) yapılarak bilgiler T.C. kararlarıyla eşleştirilir.</p>
             </div>
+
           </div>
         </div>
         </RevealOnScroll>
