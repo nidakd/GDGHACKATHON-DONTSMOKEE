@@ -415,7 +415,7 @@ function App() {
       {/* GLOBAL SABİT ARKA PLAN YAZISI (PARALLAX + İTALİK FONT) */}
       <div className="fixed inset-0 flex items-center justify-center pointer-events-none select-none z-0 opacity-30 dark:opacity-5 overflow-hidden w-full h-full p-4">
         <span 
-          className="text-slate-300 dark:text-white font-bold italic text-center break-words leading-tight"
+          className="text-slate-300 dark:text-white font-bold italic text-center whitespace-nowrap"
           style={{ 
             fontSize: 'clamp(3rem, 10vw, 8rem)', 
             fontFamily: '"Georgia", "Times New Roman", serif', 
@@ -695,22 +695,22 @@ function App() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
-            <div className="p-8 rounded-3xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 hover:border-[#9C1A15]/30 hover:shadow-lg transition-all group">
-              <div className="w-14 h-14 bg-[#FFC000]/20 rounded-2xl flex items-center justify-center text-[#9C1A15] dark:text-red-400 mb-6 group-hover:scale-110 transition-transform">
+            <div className="p-8 rounded-3xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 hover:border-[#FFC000]/50 hover:shadow-lg transition-all group">
+              <div className="w-14 h-14 bg-[#FFC000]/20 rounded-2xl flex items-center justify-center text-[#FFC000] dark:text-yellow-400 mb-6 group-hover:scale-110 transition-transform">
                 <FileText size={28} />
               </div>
               <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-3" style={{ fontFamily: '"Times New Roman", Times, serif' }}>Borçlar & Ticaret Hukuku</h3>
               <p className="text-slate-600 dark:text-slate-400 text-base leading-relaxed">Kira uyuşmazlıkları, tahliye davaları, alacak-verecek talepleri ve şirketler arası ticari ihtilaflar için nokta atışı kanun maddeleri ve emsaller.</p>
             </div>
-            <div className="p-8 rounded-3xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 hover:border-[#9C1A15]/30 hover:shadow-lg transition-all group">
-              <div className="w-14 h-14 bg-[#FFC000]/20 rounded-2xl flex items-center justify-center text-[#9C1A15] dark:text-red-400 mb-6 group-hover:scale-110 transition-transform">
+            <div className="p-8 rounded-3xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 hover:border-[#FFC000]/50 hover:shadow-lg transition-all group">
+              <div className="w-14 h-14 bg-[#FFC000]/20 rounded-2xl flex items-center justify-center text-[#FFC000] dark:text-yellow-400 mb-6 group-hover:scale-110 transition-transform">
                 <Users size={28} />
               </div>
               <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-3" style={{ fontFamily: '"Times New Roman", Times, serif' }}>İş & Sosyal Güvenlik</h3>
               <p className="text-slate-600 dark:text-slate-400 text-base leading-relaxed">Kıdem tazminatı, işe iade davaları, iş kazaları ve fazla mesai ücretlerinin hesaplanmasına temel oluşturan en güncel Yargıtay 9. Hukuk Dairesi kararları.</p>
             </div>
-            <div className="p-8 rounded-3xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 hover:border-[#9C1A15]/30 hover:shadow-lg transition-all group">
-              <div className="w-14 h-14 bg-[#FFC000]/20 rounded-2xl flex items-center justify-center text-[#9C1A15] dark:text-red-400 mb-6 group-hover:scale-110 transition-transform">
+            <div className="p-8 rounded-3xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 hover:border-[#FFC000]/50 hover:shadow-lg transition-all group">
+              <div className="w-14 h-14 bg-[#FFC000]/20 rounded-2xl flex items-center justify-center text-[#FFC000] dark:text-yellow-400 mb-6 group-hover:scale-110 transition-transform">
                 <Scale size={28} />
               </div>
               <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-3" style={{ fontFamily: '"Times New Roman", Times, serif' }}>Ceza Hukuku</h3>
