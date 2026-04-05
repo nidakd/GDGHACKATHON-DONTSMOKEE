@@ -11,9 +11,10 @@ export default function PrecedentTab({ markdown }) {
   };
 
   const extractedEsas = getEsasNo(markdown);
-  // Yargıtay'ın web tabanlı simüle edilmiş linkine yönlendiriyoruz
+  // Yargıtay'ın sistemi dışarıdan direkt URL ile karar açmaya (Deep Linking) izin vermediği için,
+  // Google'ın "site:yargitay.gov.tr" mantığını kullanarak doğrudan sitenin içindeki ilgili karara nokta atışı yapıyoruz.
   const targetUrl = extractedEsas 
-    ? `https://karararama.yargitay.gov.tr/YargitayBilgiBankasiIstemciWeb/?esas=${encodeURIComponent(extractedEsas)}` 
+    ? `https://www.google.com/search?q=${encodeURIComponent('site:yargitay.gov.tr "' + extractedEsas + '"')}` 
     : "https://karararama.yargitay.gov.tr/";
 
   return (
