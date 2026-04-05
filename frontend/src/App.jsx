@@ -238,7 +238,16 @@ function App() {
         html2canvas: { scale: 2, useCORS: true },
         jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
       };
-      html2pdf().set(opt).from(pdfRef.current).save();
+
+      // html2pdf Vite/ESM modüllerinde bazen .default olarak sarmalanabilir
+      const pdfGenerator = typeof html2pdf === 'function' ? html2pdf : html2pdf.default;
+      
+      try {
+        pdfGenerator().set(opt).from(pdfRef.current).save();
+      } catch (err) {
+        console.error("PDF Dışa Aktarma Hatası:", err);
+        alert("PDF oluşturulurken bir hata oluştu. Tarayıcınız desteklemiyor olabilir.");
+      }
     }
   };
 
@@ -375,7 +384,7 @@ function App() {
 
       {/* SIDEBAR (HISTORY) */}
       <div className={`fixed inset-0 bg-slate-900/40 z-[60] backdrop-blur-sm transition-opacity duration-300 ${isSidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} onClick={() => setIsSidebarOpen(false)}></div>
-      <div className={`fixed top-0 left-0 w-80 sm:w-96 h-full bg-white dark:bg-slate-800 z-[70] shadow-2xl transform transition-transform duration-300 flex flex-col ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+      <div className={`fixed top-0 left-0 w-80 sm:w-96 h-full bg-white dark:bg-slate-800 z-[70] shadow-2xl transform transition-transform duration-300 flex flex-col ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full pointer-events-none'}`}>
         <div className="p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-900">
           <h2 className="text-lg font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2"><History size={20} className="text-[#9C1A15] dark:text-red-400" /> Geçmiş Sorgular</h2>
           <button onClick={() => setIsSidebarOpen(false)} className="text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 p-1 rounded-md transition-colors"><X size={24}/></button>
@@ -437,11 +446,11 @@ function App() {
                   <Menu size={26} />
                 </button>
               )}
-              <div className="flex items-center space-x-2">
-                <div className="bg-gradient-to-br from-[#9C1A15] to-[#7a1410] p-2 rounded-lg text-white shadow-lg shadow-[#9C1A15]/30">
+              <div className="flex items-center space-x-2 cursor-pointer" onClick={() => window.location.href = '/'}>
+                <div className="bg-gradient-to-br from-[#9C1A15] to-[#7a1410] p-2 rounded-lg text-white shadow-lg shadow-[#9C1A15]/30 hover:scale-105 transition-transform">
                   <Scale size={24} />
                 </div>
-                <span className="text-2xl font-bold text-[#9C1A15] dark:text-red-400" style={{ fontFamily: '"Times New Roman", Times, serif' }}>
+                <span className="text-2xl font-bold text-[#9C1A15] dark:text-red-400 hover:text-[#7a1410] dark:hover:text-red-300 transition-colors" style={{ fontFamily: '"Times New Roman", Times, serif' }}>
                   Emsal.AI
                 </span>
               </div>
