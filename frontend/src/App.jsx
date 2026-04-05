@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { supabase } from './supabaseClient';
 import LawTab from './components/LawTab';
 import PrecedentTab from './components/PrecedentTab';
-import { Menu, X, History,  Bot, Scale, Search, Shield, Sparkles, BookOpen, BrainCircuit, ArrowRight, Loader, ShieldCheck, Download, Gavel, FileText, Users, Clock, Database, Award, ChevronDown } from 'lucide-react';
+import { Menu, X, History, Trash2,  Bot, Scale, Search, Shield, Sparkles, BookOpen, BrainCircuit, ArrowRight, Loader, ShieldCheck, Download, Gavel, FileText, Users, Clock, Database, Award, ChevronDown } from 'lucide-react';
 import axios from 'axios';
 import html2pdf from 'html2pdf.js';
 
@@ -158,6 +158,30 @@ function App() {
     }, 100);
   };
 
+  const handleDeleteHistoryItem = async (e, id) => {
+    e.stopPropagation(); // Kartın tıklanıp yüklenmesini engeller
+
+    const confirmDelete = window.confirm("Bu geçmiş sorgulamayı silmek istediğinize emin misiniz?");
+    if (!confirmDelete) return;
+
+    try {
+      const { error } = await supabase
+        .from('search_history')
+        .delete()
+        .eq('id', id);
+
+      if (error) {
+        console.error("Silme Hatası:", error);
+        alert("Sorgulama silinirken bir hata oluştu.");
+      } else {
+        // Silinen id'yi state'ten kaldır
+        setSearchHistory(prev => prev.filter(item => item.id !== id));
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const handleGoogleLogin = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
@@ -170,6 +194,20 @@ function App() {
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
+  };
+
+  const handleChangeAccount = async () => {
+    await supabase.auth.signOut();
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        queryParams: {
+          prompt: 'select_account',
+        },
+        redirectTo: window.location.origin,
+      }
+    });
+    if (error) console.error("Change account failed", error.message);
   };
 
   const handleExportPDF = () => {
@@ -208,6 +246,41 @@ function App() {
     return fullText;
   };
 
+  const handleMoreDetails = async () => {
+    setIsSearching(true);
+    try {
+      setResults(prev => prev ? { ...prev, precedentsMarkdown: 'Daha fazla detay analiz ediliyor...\n\nLütfen bekleyin...' } : null);
+      
+      const newPrecedents = await streamEndpoint('http://127.0.0.1:8000/api/precedents/stream/details', query, (text) => {
+        setResults(prev => prev ? { ...prev, precedentsMarkdown: text } : null);
+      });
+
+      // Bittiğinde supabase'i güncelleyebiliriz ama opsiyonel (şimdilik eklemiyorum, sadece canlı sonuç).
+    } catch (err) {
+      console.error(err);
+      setError('Detaylar alınırken bir hata oluştu.');
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
+  const handleDifferentPrecedent = async () => {
+    setIsSearching(true);
+    try {
+      setResults(prev => prev ? { ...prev, precedentsMarkdown: 'Farklı bir emsal aranıyor...\n\nLütfen bekleyin...' } : null);
+      
+      const newPrecedents = await streamEndpoint('http://127.0.0.1:8000/api/precedents/stream/different', query, (text) => {
+        setResults(prev => prev ? { ...prev, precedentsMarkdown: text } : null);
+      });
+
+    } catch (err) {
+      console.error(err);
+      setError('Farklı emsal aranırken hata oluştu.');
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
   const handleSearch = async (e) => {
     e.preventDefault();
     if (!query.trim()) return;
@@ -235,7 +308,6 @@ function App() {
         setResults(prev => prev ? { ...prev, precedentsMarkdown: text } : null);
       });
 
-      // İki bağımsız stream'in tamamen bitmesini bekle
       const [finalLaws, finalPrecedents] = await Promise.all([lawsPromise, precedentsPromise]);
 
       // Streamler bitince Supabase'e kaydet
@@ -300,7 +372,18 @@ function App() {
             searchHistory.map((item) => (
               <div key={item.id} onClick={() => loadHistoryItem(item)} className="p-4 border border-slate-200 rounded-xl hover:border-[#9C1A15]/40 hover:bg-slate-50 hover:shadow-sm cursor-pointer transition-all group relative overflow-hidden">
                  <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#9C1A15] transform -translate-x-full group-hover:translate-x-0 transition-transform"></div>
-                 <p className="text-sm font-medium text-slate-700 line-clamp-3 group-hover:text-[#9C1A15] transition-colors leading-relaxed">{item.query}</p>
+                 
+                 <div className="flex justify-between items-start gap-4">
+                   <p className="text-sm font-medium text-slate-700 line-clamp-3 group-hover:text-[#9C1A15] transition-colors leading-relaxed">{item.query}</p>
+                   <button 
+                     onClick={(e) => handleDeleteHistoryItem(e, item.id)}
+                     className="text-slate-300 hover:text-red-500 hover:bg-red-50 p-1.5 rounded-md transition-all opacity-0 group-hover:opacity-100 flex-shrink-0"
+                     title="Sorguyu Sil"
+                   >
+                     <Trash2 size={16} />
+                   </button>
+                 </div>
+                 
                  <p className="text-xs text-slate-400 mt-3 flex items-center gap-1 font-sans">
                    {new Date(item.created_at).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
                  </p>
@@ -320,7 +403,7 @@ function App() {
             transform: `translateY(${-scrollY * 0.15}px) skewX(-15deg)` 
           }}
         >
-          Adalet Mülkün Temelidir
+          Adalet Mülkün Temelidir.
         </span>
       </div>
 
@@ -353,12 +436,21 @@ function App() {
                   )}
                   <div className="flex flex-col">
                     <span className="text-slate-800 font-bold text-sm">{user.user_metadata?.full_name || user.email?.split('@')[0]}</span>
-                    <button 
-                      onClick={handleLogout}
-                      className="text-xs text-slate-500 hover:text-[#9C1A15] text-left transition-colors font-medium mt-0.5"
-                    >
-                      Çıkış Yap
-                    </button>
+                    <div className="flex items-center gap-2 mt-0.5">
+                      <button 
+                        onClick={handleChangeAccount}
+                        className="text-xs text-blue-600 hover:text-blue-800 text-left transition-colors font-medium"
+                      >
+                        Hesap Değiştir
+                      </button>
+                      <span className="text-slate-300 text-xs">|</span>
+                      <button 
+                        onClick={handleLogout}
+                        className="text-xs text-slate-500 hover:text-[#9C1A15] text-left transition-colors font-medium"
+                      >
+                        Çıkış Yap
+                      </button>
+                    </div>
                   </div>
                 </div>
               ) : (
@@ -392,7 +484,8 @@ function App() {
             {/* SONUÇLAR ALANI (Genişlik max-w-4xl yerine mx-auto max-w-[90rem] kullanılarak artırıldı) */}
             <div className={`transition-all duration-700 ease-out origin-top ${results || isSearching ? 'opacity-100 scale-100 mb-12' : 'opacity-0 scale-95 h-0 overflow-hidden mb-0'}`}>
               
-              {isSearching && (
+              {/* Eğer arama başladıysa ve HENÜZ results nesnesi oluşmadıysa spinner göster */}
+              {isSearching && !results && (
                 <div className="flex items-center justify-center p-12 bg-transparent">
                   <div className="flex flex-col items-center space-y-4">
                     <div className="flex space-x-2">
@@ -405,16 +498,24 @@ function App() {
                 </div>
               )}
 
-              {results && !isSearching && (
+              {/* results oluştuğu andan itibaren (isSearching true olsa bile) canlı akışı ekrana bas */}
+              {results && (
                 <div className="space-y-8 animate-in fade-in slide-in-from-bottom-10 duration-700">
                   
                   {/* Sonuç Özeti Başlığı ve Çıktı Butonları */}
                   <div className="flex items-center justify-between border-b border-slate-200 pb-4 mt-8">
                     <div className="flex items-center space-x-4">
                       <h3 className="text-3xl font-bold font-serif text-slate-900">Analiz Raporu</h3>
-                      <span className="text-sm font-medium bg-[#FFC000]/20 text-[#9C1A15] px-3 py-1 rounded-full flex items-center shadow-sm border border-[#FFC000]/30">
-                        <ShieldCheck size={16} className="mr-1"/> Başarıyla Tamamlandı
-                      </span>
+                      {/* Analiz devam ediyorsa "Yazılıyor...", bittiyse "Başarıyla Tamamlandı" göster */}
+                      {isSearching ? (
+                        <span className="text-sm font-medium bg-blue-100 text-blue-700 px-3 py-1 rounded-full flex items-center shadow-sm border border-blue-200">
+                          <Loader size={16} className="mr-1 animate-spin"/> Canlı Analiz Ediliyor...
+                        </span>
+                      ) : (
+                        <span className="text-sm font-medium bg-[#FFC000]/20 text-[#9C1A15] px-3 py-1 rounded-full flex items-center shadow-sm border border-[#FFC000]/30">
+                          <ShieldCheck size={16} className="mr-1"/> Başarıyla Tamamlandı
+                        </span>
+                      )}
                     </div>
                     {/* PDF İndir Butonu */}
                     <button 
@@ -435,8 +536,31 @@ function App() {
                     </div>
                     
                     {/* Emsal Kararlar (Sağ Kolon) */}
-                    <div className="md:col-span-8">
-                      <PrecedentTab markdown={results.precedentsMarkdown} />
+                    <div className="md:col-span-8 flex flex-col">
+                      <div className="flex-1">
+                        <PrecedentTab markdown={results.precedentsMarkdown} />
+                      </div>
+                      
+                      {/* Emsal Altı Özel Butonlar */}
+                      {results && !isSearching && (
+                        <div className="mt-6 flex flex-wrap gap-4 pt-4 border-t border-slate-100 justify-end">
+                          <button 
+                            onClick={handleMoreDetails}
+                            className="bg-[#9C1A15]/10 text-[#9C1A15] hover:bg-[#9C1A15]/20 font-bold px-4 py-2 rounded-xl transition-colors shadow-sm flex items-center text-sm"
+                          >
+                            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            Daha Fazla Detay
+                          </button>
+                          
+                          <button 
+                            onClick={handleDifferentPrecedent}
+                            className="bg-slate-100 text-slate-700 hover:bg-slate-200 font-bold px-4 py-2 rounded-xl transition-colors shadow-sm flex items-center text-sm"
+                          >
+                            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                            Farklı Bir Emsal Bul
+                          </button>
+                        </div>
+                      )}
                     </div>
                   </div>
 
@@ -451,6 +575,11 @@ function App() {
                 <textarea
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                      handleSearch(e);
+                    }
+                  }}
                   disabled={isSearching}
                   placeholder="Kısa ama detaylı şekilde müvekkilinizin veya karşılaştığınız durumu buraya yazın."
                   className="w-full h-40 sm:h-48 resize-none p-6 text-lg text-slate-700 bg-transparent placeholder-slate-400 focus:outline-none"

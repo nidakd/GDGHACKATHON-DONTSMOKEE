@@ -10,10 +10,11 @@ import google.generativeai as genai
 load_dotenv(override=True)
 
 API_KEY = os.getenv("API_KEY")
+API_KEY_2 = os.getenv("API_KEY_2") # Emsaller için 2. API Key
 if not API_KEY:
     raise ValueError("API_KEY bulunamadı! Lütfen .env dosyanızı kontrol edin.")
 
-# Gemini'yi konfigüre et
+# Gemini'yi 1. anahtar ile konfigüre et (Kanunlar vs için genel ayar)
 genai.configure(api_key=API_KEY)
 
 app = FastAPI(title="Haklı-Hak Backend API")
@@ -41,7 +42,7 @@ def read_root():
 @app.post("/api/laws")
 async def get_laws(request: LawRequest):
     try:
-        model = genai.GenerativeModel("gemini-2.5-flash")
+        model = genai.GenerativeModel("gemini-2.5-flash-lite")
         
         # Kanun bulmak için prompt
         prompt = f"""
@@ -59,7 +60,7 @@ async def get_laws(request: LawRequest):
 @app.post("/api/precedents")
 async def get_precedents(request: PrecedentRequest):
     try:
-        model = genai.GenerativeModel("gemini-2.5-flash")
+        model = genai.GenerativeModel("gemini-2.5-flash-lite")
         
         # Emsal karar ve analiz bulmak için Prompt
         # Not: İleride Grounding with Google Search aktif edilecek.
@@ -83,14 +84,35 @@ async def get_precedents(request: PrecedentRequest):
 async def get_laws_stream(request: LawRequest):
     def generate():
         try:
-            model = genai.GenerativeModel("gemini-2.5-flash")
+            import urllib.request
+            import json
+            import ssl
+            
             prompt = f"""Sen uzman bir Türk Hukuku asistanısın. Görevin, kullanıcının anlattığı olaya en uygun kanun maddelerini bulmaktır.
             Olay: {request.olay_metni}
             Lütfen bu olayın hangi Türk Kanunları ve maddeleri (örneğin Türk Borçlar Kanunu Madde X, Türk Ceza Kanunu vb.) kapsamına girdiğini açıkla."""
             
-            response = model.generate_content(prompt, stream=True)
-            for chunk in response:
-                yield chunk.text
+            # API_KEY garantili şekilde REST ile gidiyor (SDK araya girmiyor)
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:streamGenerateContent?alt=sse&key={API_KEY}"
+            payload = json.dumps({"contents": [{"parts": [{"text": prompt}]}]}).encode("utf-8")
+            req = urllib.request.Request(url, data=payload, headers={"Content-Type": "application/json"})
+            
+            # Mac'te Python SSL hatasını yoksaymak için (Özellikle urllib kullanımında)
+            ctx = ssl._create_unverified_context()
+            
+            with urllib.request.urlopen(req, context=ctx) as res:
+                for line in res:
+                    line_str = line.decode("utf-8").strip()
+                    if line_str.startswith("data: "):
+                        try:
+                            chunk_data = json.loads(line_str[6:])
+                            candidates = chunk_data.get("candidates", [])
+                            if candidates:
+                                parts = candidates[0].get("content", {}).get("parts", [])
+                                if parts:
+                                    yield parts[0].get("text", "")
+                        except:
+                            pass
         except Exception as e:
             yield f"Hata: {str(e)}"
             
@@ -100,7 +122,10 @@ async def get_laws_stream(request: LawRequest):
 async def get_precedents_stream(request: PrecedentRequest):
     def generate():
         try:
-            model = genai.GenerativeModel("gemini-2.5-flash")
+            import urllib.request
+            import json
+            import ssl
+            
             prompt = f"""Sen uzman bir Türk Hukuku asistanısın. Görevin, kullanıcı olayına uyan Yargıtay veya Danıştay emsal kararlarını bulup analiz etmektir.
             Olay: {request.olay_metni}
             
@@ -109,9 +134,113 @@ async def get_precedents_stream(request: PrecedentRequest):
             2. Alternatif Görüşler (Benzer diğer kararların özeti)
             3. Sorumluluk Reddi (Sadece bilgilendirme amaçlıdır uyarısı)"""
             
-            response = model.generate_content(prompt, stream=True)
-            for chunk in response:
-                yield chunk.text
+            if not API_KEY_2:
+                # 2. Key yoksa varsayılan sdk ile devam et (limit riskiyle)
+                model = genai.GenerativeModel("gemini-2.5-flash-lite")
+                response = model.generate_content(prompt, stream=True)
+                for chunk in response:
+                    yield chunk.text
+            else:
+                # 2. Key varsa doğrudan REST API ile SSE kullan
+                url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:streamGenerateContent?alt=sse&key={API_KEY_2}"
+                payload = json.dumps({"contents": [{"parts": [{"text": prompt}]}]}).encode("utf-8")
+                req = urllib.request.Request(url, data=payload, headers={"Content-Type": "application/json"})
+                
+                # Mac'te Python SSL hatasını yoksaymak için (Özellikle urllib kullanımında)
+                ctx = ssl._create_unverified_context()
+                
+                with urllib.request.urlopen(req, context=ctx) as res:
+                    for line in res:
+                        line_str = line.decode("utf-8").strip()
+                        if line_str.startswith("data: "):
+                            try:
+                                chunk_data = json.loads(line_str[6:])
+                                candidates = chunk_data.get("candidates", [])
+                                if candidates:
+                                    parts = candidates[0].get("content", {}).get("parts", [])
+                                    if parts:
+                                        yield parts[0].get("text", "")
+                            except:
+                                pass
+        except Exception as e:
+            yield f"Hata: {str(e)}"
+            
+    return StreamingResponse(generate(), media_type="text/plain")
+
+@app.post("/api/precedents/stream/details")
+async def get_precedents_stream_details(request: PrecedentRequest):
+    def generate():
+        try:
+            import urllib.request
+            import json
+            import ssl
+            
+            prompt = f"""Sen uzman bir Türk Hukuku asistanısın. Şu hukuki olaya dair daha önce kısa bir emsal karar sunmuştun. Lütfen bulduğun veya aklındaki en uygun Yargıtay/Danıştay kararını ŞİMDİ ÇOK DAHA DETAYLI, derinlemesine gerekçeleriyle ve geniş bir hukuki yorumla açıkla. Sadece bilgilendirme amaçlı olduğunu da belirt.
+            Olay: {request.olay_metni}"""
+            
+            if not API_KEY_2:
+                model = genai.GenerativeModel("gemini-2.5-flash-lite")
+                response = model.generate_content(prompt, stream=True)
+                for chunk in response:
+                    yield chunk.text
+            else:
+                url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:streamGenerateContent?alt=sse&key={API_KEY_2}"
+                payload = json.dumps({"contents": [{"parts": [{"text": prompt}]}]}).encode("utf-8")
+                req = urllib.request.Request(url, data=payload, headers={"Content-Type": "application/json"})
+                ctx = ssl._create_unverified_context()
+                
+                with urllib.request.urlopen(req, context=ctx) as res:
+                    for line in res:
+                        line_str = line.decode("utf-8").strip()
+                        if line_str.startswith("data: "):
+                            try:
+                                chunk_data = json.loads(line_str[6:])
+                                candidates = chunk_data.get("candidates", [])
+                                if candidates:
+                                    parts = candidates[0].get("content", {}).get("parts", [])
+                                    if parts:
+                                        yield parts[0].get("text", "")
+                            except:
+                                pass
+        except Exception as e:
+            yield f"Hata: {str(e)}"
+            
+    return StreamingResponse(generate(), media_type="text/plain")
+
+@app.post("/api/precedents/stream/different")
+async def get_precedents_stream_different(request: PrecedentRequest):
+    def generate():
+        try:
+            import urllib.request
+            import json
+            import ssl
+            
+            prompt = f"""Sen uzman bir Türk Hukuku asistanısın. Şu olaya dair daha önce sunduğun emsal karar HARİCİNDE, tamamen FARKLI ve yeni bir Yargıtay veya Danıştay emsal kararı bulup analiz et. Olay: {request.olay_metni}"""
+            
+            if not API_KEY_2:
+                model = genai.GenerativeModel("gemini-2.5-flash-lite")
+                response = model.generate_content(prompt, stream=True)
+                for chunk in response:
+                    yield chunk.text
+            else:
+                url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:streamGenerateContent?alt=sse&key={API_KEY_2}"
+                payload = json.dumps({"contents": [{"parts": [{"text": prompt}]}]}).encode("utf-8")
+                req = urllib.request.Request(url, data=payload, headers={"Content-Type": "application/json"})
+                ctx = ssl._create_unverified_context()
+                
+                with urllib.request.urlopen(req, context=ctx) as res:
+                    for line in res:
+                        line_str = line.decode("utf-8").strip()
+                        if line_str.startswith("data: "):
+                            try:
+                                chunk_data = json.loads(line_str[6:])
+                                candidates = chunk_data.get("candidates", [])
+                                if candidates:
+                                    parts = candidates[0].get("content", {}).get("parts", [])
+                                    if parts:
+                                        yield parts[0].get("text", "")
+                            except:
+                                pass
         except Exception as e:
             yield f"Hata: {str(e)}"
             

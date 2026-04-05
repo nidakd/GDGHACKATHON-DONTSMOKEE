@@ -1,16 +1,7 @@
-/Users/hnidakd/Downloads/DONTSMOKEE/backend/main.py:6: FutureWarning: 
-
-All support for the `google.generativeai` package has ended. It will no longer be receiving 
-updates or bug fixes. Please switch to the `google.genai` package as soon as possible.
-See README for more details:
-
-https://github.com/google-gemini/deprecated-generative-ai-python/blob/main/README.md
-
-  import google.generativeai as genai
 INFO:     Will watch for changes in these directories: ['/Users/hnidakd/Downloads/DONTSMOKEE/backend']
 INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
-INFO:     Started reloader process [23172] using StatReload
-/Users/hnidakd/Downloads/DONTSMOKEE/backend/main.py:6: FutureWarning: 
+INFO:     Started reloader process [46455] using StatReload
+/Users/hnidakd/Downloads/DONTSMOKEE/backend/main.py:7: FutureWarning: 
 
 All support for the `google.generativeai` package has ended. It will no longer be receiving 
 updates or bug fixes. Please switch to the `google.genai` package as soon as possible.
@@ -19,20 +10,73 @@ See README for more details:
 https://github.com/google-gemini/deprecated-generative-ai-python/blob/main/README.md
 
   import google.generativeai as genai
-INFO:     Started server process [23224]
+INFO:     Started server process [46505]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
-INFO:     127.0.0.1:63018 - "POST /api/laws HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63019 - "POST /api/precedents HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63468 - "OPTIONS /api/laws HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63469 - "OPTIONS /api/precedents HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63469 - "POST /api/laws HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63468 - "POST /api/precedents HTTP/1.1" 200 OK
-INFO:     127.0.0.1:64178 - "POST /api/laws HTTP/1.1" 200 OK
-INFO:     127.0.0.1:64231 - "POST /api/precedents HTTP/1.1" 200 OK
-INFO:     127.0.0.1:64504 - "POST /api/laws HTTP/1.1" 200 OK
-INFO:     127.0.0.1:64505 - "POST /api/precedents HTTP/1.1" 200 OK
-INFO:     127.0.0.1:49322 - "OPTIONS /api/laws HTTP/1.1" 200 OK
-INFO:     127.0.0.1:49323 - "OPTIONS /api/precedents HTTP/1.1" 200 OK
-INFO:     127.0.0.1:49323 - "POST /api/laws HTTP/1.1" 200 OK
-INFO:     127.0.0.1:49322 - "POST /api/precedents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59269 - "OPTIONS /api/laws/stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59270 - "OPTIONS /api/precedents/stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59270 - "POST /api/laws/stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59269 - "POST /api/precedents/stream HTTP/1.1" 200 OK
+WARNING:  StatReload detected changes in 'main.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [46505]
+/Users/hnidakd/Downloads/DONTSMOKEE/backend/main.py:7: FutureWarning: 
+
+All support for the `google.generativeai` package has ended. It will no longer be receiving 
+updates or bug fixes. Please switch to the `google.genai` package as soon as possible.
+See README for more details:
+
+https://github.com/google-gemini/deprecated-generative-ai-python/blob/main/README.md
+
+  import google.generativeai as genai
+INFO:     Started server process [46927]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     127.0.0.1:59292 - "POST /api/laws/stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59293 - "POST /api/precedents/stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59367 - "POST /api/laws/stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59368 - "POST /api/precedents/stream HTTP/1.1" 200 OK
+WARNING:  StatReload detected changes in 'main.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [46927]
+/Users/hnidakd/Downloads/DONTSMOKEE/backend/main.py:7: FutureWarning: 
+
+All support for the `google.generativeai` package has ended. It will no longer be receiving 
+updates or bug fixes. Please switch to the `google.genai` package as soon as possible.
+See README for more details:
+
+https://github.com/google-gemini/deprecated-generative-ai-python/blob/main/README.md
+
+  import google.generativeai as genai
+INFO:     Started server process [50950]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'main.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [50950]
+/Users/hnidakd/Downloads/DONTSMOKEE/backend/main.py:7: FutureWarning: 
+
+All support for the `google.generativeai` package has ended. It will no longer be receiving 
+updates or bug fixes. Please switch to the `google.genai` package as soon as possible.
+See README for more details:
+
+https://github.com/google-gemini/deprecated-generative-ai-python/blob/main/README.md
+
+  import google.generativeai as genai
+INFO:     Started server process [51161]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     127.0.0.1:60085 - "OPTIONS /api/laws/stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60086 - "OPTIONS /api/precedents/stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60086 - "POST /api/laws/stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60085 - "POST /api/precedents/stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60090 - "OPTIONS /api/precedents/stream/details HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60090 - "POST /api/precedents/stream/details HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60090 - "OPTIONS /api/precedents/stream/different HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60090 - "POST /api/precedents/stream/different HTTP/1.1" 200 OK
