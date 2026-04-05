@@ -240,7 +240,22 @@ function App() {
     // (html2canvas/html2pdf) tarafından desteklenmiyor. Bu nedenle çok daha stabil, 
     // vektörel tabanlı ve metinleri seçilebilir kılan yerel tarayıcı (PDF) 
     // yazdırma işlevini (window.print) kullanıyoruz. 
-    window.print();
+
+    // Gece modunda yazdırırken metinlerin ve arkaplanların siyah-beyaz karmaşası 
+    // yaşamaması için yazdırma anında sayfayı "aydınlık (light)" moda alıyoruz.
+    const isCurrentlyDark = document.documentElement.classList.contains('dark');
+    if (isCurrentlyDark) {
+      document.documentElement.classList.remove('dark');
+    }
+
+    setTimeout(() => {
+      window.print();
+      
+      // Yazdırma ekranı sonrası kullanıcının modunu geri yüklüyoruz.
+      if (isCurrentlyDark) {
+        document.documentElement.classList.add('dark');
+      }
+    }, 100); // DOM'un aydınlık moda geçmesi için çok kısa bir süre bekliyoruz
   };
 
   const streamEndpoint = async (url, queryText, setPartialContent) => {

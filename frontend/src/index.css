@@ -18,24 +18,35 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 @media print {
-  /* Arkaplan renklerini zorla gösterir */
+  /* Arkaplan renkleri ve kutu tasarımlarını gösterir */
   * {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
   
-  /* Gövde arka planını temizle, siyah metin zorunluluğu getir */
+  /* Gövde arka planını yazdırmada A4 kağıdı olarak tut */
   body {
     background: transparent !important;
-    color: black !important;
+    color: #0f172a !important;
   }
 
-  /* Markdown metinlerinin siyah beyaz çıkması ve tam sayfa olması için */
-  #pdf-content .prose * {
-    color: black !important;
+  /* HTML "dark" modu kaldırılarak Tailwind'in "light" versiyonu
+     görünür kılınacak ama ek güvenlik olarak açık açık okunaklı yapalım: */
+  #pdf-content {
+    background: transparent !important;
   }
   
-  /* Sayfa taşmalarını önlemek için dökümana padding ayarı */
+  /* .prose yani Markdown etiketlerini A4'te tertemiz yapalım */
+  #pdf-content .prose * {
+    color: #0f172a !important; /* Açık slate/siyah renk metin */
+  }
+
+  /* Kutu ve arka plan lekelerini temiz, okunaklı tut */
+  .border, .bg-white {
+    box-shadow: none !important;
+  }
+  
+  /* Sayfa boşlukları - Tam Sayfa A4 */
   @page {
     margin: 1.5cm;
     size: A4 portrait;
