@@ -236,24 +236,33 @@ function App() {
   };
 
   const handleExportPDF = async () => {
-    if (pdfRef.current) {
-      try {
-        const html2pdfModule = await import('html2pdf.js');
-        const pdfGenerator = html2pdfModule.default || html2pdfModule;
-        
-        const opt = {
-          margin: [0.5, 0.5, 0.5, 0.5],
-          filename: 'Emsal_AI_Analiz_Raporu.pdf',
-          image: { type: 'jpeg', quality: 0.98 },
-          html2canvas: { scale: 2, useCORS: true, logging: false },
-          jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-        };
+    if (!pdfRef.current) return;
 
-        await pdfGenerator().set(opt).from(pdfRef.current).save();
-      } catch (err) {
-        console.error("PDF Dışa Aktarma Hatası:", err);
-        alert("PDF oluşturulurken bir hata oluştu veya tarayıcınız bu eklentiyi desteklemiyor.");
+    try {
+      // Vite/ESM modül çakışmalarını önlemek için doğrudan CDN üzerinden yükleme
+      if (typeof window.html2pdf === 'undefined') {
+        await new Promise((resolve, reject) => {
+          const script = document.createElement('script');
+          script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
+          script.onload = resolve;
+          script.onerror = () => reject(new Error("CDN betiği yüklenemedi"));
+          document.head.appendChild(script);
+        });
       }
+
+      const opt = {
+        margin: [0.5, 0.5, 0.5, 0.5],
+        filename: 'Emsal_AI_Analiz_Raporu.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, logging: false },
+        jsPDF: { unit: 'in', format: 'A4', orientation: 'portrait' }
+      };
+
+      await window.html2pdf().set(opt).from(pdfRef.current).save();
+      
+    } catch (err) {
+      console.error("PDF Dışa Aktarma Hatası:", err);
+      alert("PDF dosyası oluşturulurken teknik bir hata oldu. Hata detayı: " + err.message);
     }
   };
 
