@@ -142,7 +142,6 @@ Emsal.AI/
 │   └── vite.config.js       # Vite ayarları
 ├── scripts/                 # Kod manipülasyonu ve otomasyon scriptleri
 │   └── *.py                 # Geliştirici scriptleri
-├── docs.md                  # Proje takip ve notasyon dökümanı
 └── README.md                # Şu an okuduğunuz döküman
 ```
 
