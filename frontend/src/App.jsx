@@ -453,31 +453,34 @@ function App() {
 
       
       {/* HEADER / NAVBAR */}
-      <nav className="fixed top-0 w-full z-50 bg-white/90 dark:bg-slate-950/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 print:hidden">
+      <nav className={`fixed top-0 w-full z-50 transition-all duration-500 ease-in-out print:hidden ${scrollY > 20 ? 'bg-white/85 dark:bg-slate-950/85 backdrop-blur-xl border-b border-slate-200/80 dark:border-slate-800/80 shadow-lg shadow-slate-200/50 dark:shadow-black/40 py-0' : 'bg-white/40 dark:bg-slate-950/40 backdrop-blur-md border-b border-transparent py-2'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
+          <div className="flex justify-between items-center h-16 transition-all duration-300">
             <div className="flex items-center space-x-4">
               {user && (
-                <button onClick={() => setIsSidebarOpen(true)} className="text-slate-600 dark:text-slate-400 hover:text-[#9C1A15] transition-colors p-2 -ml-2 focus:outline-none">
+                <button onClick={() => setIsSidebarOpen(true)} className="text-slate-600 dark:text-slate-400 hover:text-[#9C1A15] transition-all duration-300 active:scale-90 p-2 -ml-2 focus:outline-none rounded-full hover:bg-slate-100 dark:hover:bg-slate-800">
                   <Menu size={26} />
                 </button>
               )}
-              <div className="flex items-center space-x-2 cursor-pointer" onClick={handleGoHome}>
-                <div className="bg-gradient-to-br from-[#9C1A15] to-[#7a1410] p-2 rounded-lg text-white shadow-lg shadow-[#9C1A15]/30 hover:scale-105 transition-transform">
-                  <Scale size={24} />
+              <div className="flex items-center space-x-2 cursor-pointer group" onClick={handleGoHome}>
+                <div className="bg-gradient-to-br from-[#9C1A15] to-[#7a1410] p-2 rounded-xl text-white shadow-md shadow-[#9C1A15]/30 group-hover:shadow-lg group-hover:shadow-[#9C1A15]/50 group-hover:-translate-y-0.5 transition-all duration-300">
+                  <Scale size={24} className="transform group-hover:rotate-[-5deg] transition-transform duration-300" />
                 </div>
-                <span className="text-2xl font-bold text-[#9C1A15] dark:text-red-400 hover:text-[#7a1410] dark:hover:text-red-300 transition-colors" style={{ fontFamily: '"Times New Roman", Times, serif' }}>
+                <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#9C1A15] to-[#5c0f0c] dark:from-red-400 dark:to-red-600 transition-all duration-300 group-hover:scale-[1.02]" style={{ fontFamily: '"Times New Roman", Times, serif' }}>
                   Emsal.AI
                 </span>
               </div>
             </div>
             <div className="hidden md:flex items-center space-x-6">
-              <a href="#arama-motorlari" className="text-lg font-bold text-slate-600\b hover:text-[#9C1A15] dark:hover:text-[#FFC000] transition-colors">Nasıl Çalışır?</a>
+              <a href="#arama-motorlari" className="text-base font-bold text-slate-600 hover:text-[#9C1A15] dark:text-slate-400 dark:hover:text-[#FFC000] transition-colors relative group">
+                Nasıl Çalışır?
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#9C1A15] dark:bg-[#FFC000] transition-all duration-300 group-hover:w-full"></span>
+              </a>
 
               {/* DARK MODE TOGGLE BUTTON */}
               <button
                 onClick={() => setIsDarkMode(!isDarkMode)}
-                className="p-2 rounded-full bg-slate-100\b text-slate-600 dark:text-slate-400 dark:text-[#FFC000] hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors"
+                className="p-2.5 rounded-full bg-slate-100/80 dark:bg-slate-800/80 text-slate-600 dark:text-[#FFC000] hover:bg-slate-200 dark:hover:bg-slate-700 transition-all duration-300 hover:shadow-sm hover:rotate-12 active:scale-95"
                 title="Koyu / Açık Mod Değiştir"
               >
                 {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
