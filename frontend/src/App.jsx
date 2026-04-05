@@ -686,7 +686,7 @@ function App() {
       <section className="py-24 bg-transparent relative z-10">
         <div className="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <div className="inline-flex items-center space-x-2 bg-[#9C1A15]/10 dark:bg-red-500/20 border border-[#9C1A15]/20 dark:border-red-500/30 text-[#9C1A15] dark:text-red-400 px-4 py-1.5 rounded-full text-sm font-bold mb-6">
+            <div className="inline-flex items-center space-x-2.5 bg-gradient-to-r from-[#9C1A15]/10 via-[#9C1A15]/5 to-transparent dark:from-[#FFC000]/10 dark:via-[#FFC000]/5 dark:to-transparent border border-[#9C1A15]/20 dark:border-[#FFC000]/20 text-[#9C1A15] dark:text-[#FFC000] px-5 py-2 rounded-full text-xs font-black uppercase tracking-widest shadow-sm backdrop-blur-sm mb-6">
               <Gavel size={16} />
               <span>Geniş Kapsamlı Analiz</span>
             </div>
