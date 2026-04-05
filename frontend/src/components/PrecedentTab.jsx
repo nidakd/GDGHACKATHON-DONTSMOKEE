@@ -7,7 +7,7 @@ export default function PrecedentTab({ markdown }) {
   return (
     <div className="space-y-8">
       <h2 className="text-xl font-bold font-serif text-amber-700 dark:text-amber-400 mb-4 flex items-center gap-2">
-        <Scale size={24} className="text-amber-500 dark:text-amber-400" /> Emsal Kararlar ve AI Yorumu
+        <Scale size={24} className="text-amber-500 dark:text-amber-400" /> Emsal Kararlar
       </h2>
 
       <div className="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-slate-800 dark:to-slate-900 rounded-2xl p-6 md:p-8 border border-amber-200 dark:border-amber-900/50 shadow-md hover:shadow-lg transition-shadow">
