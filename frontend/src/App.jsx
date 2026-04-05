@@ -476,8 +476,6 @@ function App() {
       
       {/* HEADER / NAVBAR */}
       <nav className={`fixed top-0 w-full z-50 transition-all duration-500 ease-[cubic-bezier(0.25,0.1,0.25,1.0)] print:hidden ${
-        scrollDirection === 'down' && scrollY > 100 ? '-translate-y-full' : 'translate-y-0'
-      } ${
         scrollY > 20 
           ? 'bg-white/85 dark:bg-slate-950/85 backdrop-blur-xl border-b border-slate-200/80 dark:border-slate-800/80 shadow-lg shadow-slate-200/50 dark:shadow-black/40 py-0' 
           : 'bg-white/40 dark:bg-slate-950/40 backdrop-blur-md border-b border-transparent py-2'
