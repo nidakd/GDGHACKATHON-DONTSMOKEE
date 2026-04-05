@@ -17,7 +17,7 @@ if not API_KEY:
 # Gemini'yi 1. anahtar ile konfigüre et (Kanunlar vs için genel ayar)
 genai.configure(api_key=API_KEY)
 
-app = FastAPI(title="Haklı-Hak Backend API")
+app = FastAPI(title="Emsal.AI Backend API")
 
 # Frontend'in (React) backend'e istek atabilmesi için CORS ayarları
 app.add_middleware(
@@ -37,7 +37,7 @@ class PrecedentRequest(BaseModel):
 
 @app.get("/")
 def read_root():
-    return {"message": "Haklı-Hak Backend Servisi Çalışıyor!"}
+    return {"message": "Emsal.AI Backend Servisi Çalışıyor!"}
 
 @app.post("/api/laws")
 async def get_laws(request: LawRequest):

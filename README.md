@@ -1,53 +1,156 @@
-# Haklı-Hak: YZ Destekli Hukuki Asistan (GDG Hackathon - DONTSMOKE)
+# ⚖️ Emsal.AI : YZ Destekli Hukuki Araştırma ve Analiz Asistanı
 
-## 📌 Proje Özeti
-Haklı-Hak (veya benzeri bir isim), hukukta kanunların genel ve soyut tanımlarından sıyrılarak, gerçek hayattaki karmaşık olaylara en uygun **Emsal Kararları** (Yargıtay/Danıştay) saniyeler içinde bulan ve analiz eden, Gemini destekli bir **Anlamsal Arama ve Karşılaştırmalı Analiz** motorudur.
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![Python](https://img.shields.io/badge/python-3.8%2B-blue)
+![React](https://img.shields.io/badge/react-18.0%2B-blue)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.100%2B-green)
 
----
+*GDG Hackathon için DONTSMOKE ekibi tarafından geliştirilmiştir.*
 
-## 🏛️ 1. Problem Tanımı ve Önemi (15 Puan)
-**Problem:** Hukukta kanunlar genel ve soyuttur; gerçek hayattaki karmaşık olaylar genellikle kanunlarda birebir yer almaz. Bu noktada davaların kaderini "Emsal Kararlar" belirler. Ancak avukatlar ve stajyerler, binlerce sayfalık dava dosyaları ve yığınla mahkeme kararı arasında doğru emsali bulmak için günlerini harcamaktadır.
-**Önemi:** Gözden kaçan tek bir emsal karar, davanın kaybedilmesine, adaletin gecikmesine ve ciddi maddi/manevi kayıplara yol açabilir. Zamanın çok değerli olduğu hukuk sektöründe bu manuel süreç büyük bir darboğazdır.
-
----
-
-## 💡 2. Yenilikçilik (Innovation) (15 Puan)
-Standart bir "hukuk arama motoru" kelime bazlı (keyword) arama yapar. Bizim yeniliğimiz **"Anlamsal (Semantic) Arama ve Karşılaştırmalı Analiz"** yapmamızdır.
-**Çift Yönlü Motor (Dual-Engine):**
-1.  **Kanun Motoru:** Olayın direkt hangi kanun/madde kapsamına girdiğini tespit eder.
-2.  **Emsal & Analiz Motoru (Gemini Destekli):** Kanunda boşluk varsa veya olay karmaşıksa Google Search entegreli **Gemini API** ile web'den/veri tabanından emsalleri çeker. Sadece listelemekle kalmaz; kararları okur, olayınızla karşılaştırır, en yüksek eşleşme oranına sahip Emsal'i "Baş Karar" olarak öne çıkarır ve diğerlerini "Alternatif Görüşler" olarak özetler.
+**Emsal.AI**, avukatlar, stajyerler ve hukuk profesyonelleri için geliştirilmiş, gücünü **Google Gemini 2.5**'ten alan yenilikçi bir hukuki asistan platformudur. Doğal dille yazılan karmaşık hukuki olayları anlamsal (semantik) olarak işler; ilgili kanun maddelerini ve en uygun Yargıtay/Danıştay **emsal kararlarını** saniyeler içinde bularak analiz eder.
 
 ---
 
-## 🌍 3. Etki ve Gerçek Dünya Kullanılabilirliği (10 Puan)
-- **Zaman ve Maliyet Tasarrufu:** Avukatların 15-20 saatini alan araştırma sürecini saniyelere indirir.
-- **Adalete Erişim:** Sadece büyük hukuk bürolarının değil, tek başına çalışan avukatların da güçlü bir araştırma asistanına sahip olmasını sağlar.
-- **Kullanılabilirlik:** Kullanıcı dostu, sade bir arayüzle (bir chat veya arama çubuğu) herkesin anlayabileceği raporlar üretir.
+## 📑 İçindekiler
+- [Öne Çıkan Özellikler](#-öne-çıkan-özellikler)
+- [Nasıl Çalışır?](#-nasıl-çalışır)
+- [Kullanılan Teknolojiler (Tech Stack)](#-kullanılan-teknolojiler-tech-stack)
+- [Proje Kurulumu ve Çalıştırma](#-proje-kurulumu-ve-çalıştırma)
+- [Proje Klasör Yapısı](#-proje-klasör-yapısı)
+- [Yasal Uyarı](#-yasal-uyarı-sorumluluk-reddi)
+- [Ekip](#-ekip)
 
 ---
 
-## 🎭 4. Sunum ve Anlatım Stratejisi (25 Puan)
-- **Hikayeleştirme (Storytelling):** Sunum teknik detaylarla değil, bir hikaye ile başlayacak. *"Bu Ayşe. Genç bir avukat. Yarın çok kritik bir davası var ve müvekkilinin durumu kanunlarda tam geçmiyor. Bütün gece emsal karar aramak zorunda..."*
-Ardından problemin çözümü (uygulamamız) sahnede gösterilecek.
-- **Jüriyi Etkileme:** İki faza odaklanılacaktır: 
-  1) Yasayı bulmak kolaydır, 2) Yasanın yetmediği yerde uygun emsali yorumlamak asıl zekadır. Platformun bu "yorumlama ve kıyaslama" yeteneği vurgulanacaktır.
+## 🚀 Öne Çıkan Özellikler
+
+- **Çift Yönlü Analiz Motoru:** 
+  - *Kanun Motoru:* Olayın hangi kanun/madde kapsamına girdiğini tespit eder.
+  - *Emsal Motoru:* En uygun kararları bulur, eşleştirir, yorumlar ve alternatif görüşler sunar.
+- **Anlık Akış (Streaming - SSE):** ChatGPT benzeri kesintisiz yanıt akışı sayesinde bekleme sürelerini ortadan kaldırır.
+- **Halüsinasyon Koruması (Grounding):** Google Search entegrasyonu sayesinde üretilen içeriklerin doğruluğu teyit edilir, uydurma hukuki verilerin önüne geçilir.
+- **Oturum ve Geçmiş Yönetimi:** Supabase destekli kullanıcı girişi ile yapılan analizler kaydedilir ve daha sonra incelenebilir.
+- **PDF Raporlama:** Bulunan yasaları ve analiz edilen emsal kararları tek tıkla PDF formatında dışa aktarma imkanı sunar.
 
 ---
 
-## 🛠️ 5. Teknik Uygulama ve Demo (25 Puan)
-3 kişilik ekibin iş bölümü şu şekildedir:
+## 🧠 Nasıl Çalışır?
 
-- **Frontend (Kişi 1):** Modern ve temiz bir UI (React/Vite vb.). Sol tarafta olayın yazılacağı bir metin kutusu, sağ tarafta 2 sekme ("İlgili Kanunlar" ve "Emsal Kararlar Analizi").
-- **Backend & Prompt Engineering (Kişi 2 & 3):** Node.js / Python (FastAPI). Gemini API isteklerinin yönetilmesi. *"Grounding with Google Search"* özelliği kullanılarak modelin uydurması (hallucination) önlenecektir.
-
-**Teknik Akış:**
-1.  **Kullanıcı olayı yazar:** *"Müvekkilimin köpeği komşunun bahçesindeki bisikleti ısırdı."*
-2.  **API 1 (Sistem Promptu 1):** Türk Borçlar Kanunu - Hayvan Bulunduranın Sorumluluğu vb. maddeleri getirir.
-3.  **API 2 (Sistem Promptu 2 + Google Search):** İnternetteki emsal Yargıtay kararlarını tarar. Gemini'ye şu prompt atılır: *"Aşağıdaki davaları analiz et, en benzerini seç, neden benzediğini açıkla ve diğerlerini kısaca özetle."*
+1. **Olayın Tanımlanması:** Kullanıcı, platforma hukuki uyuşmazlığı günlük dille ve detaylıca yazar (Örn: *“Müvekkilimin köpeği komşunun bahçesine girip bisikleti parçalamış...”*).
+2. **Semantik İşleme:** Sistem, bu metni "kelime-kelime" değil "anlam bütünlüğü" çerçevesinde işler.
+3. **Paralel API İstekleri:**
+   - İlk istek, olayın temel kanuni dayanaklarını araştırır.
+   - İkinci istek (Grounding aktif modda), ilgili Yargıtay/Danıştay kararlarını internetten tarar, olaya en uygun "baş karar" ile diğer "alternatif kararları" listeler.
+4. **Sonuçların Sunulması:** Tüm bulgular ayrıştırılmış sekmelerde anlık olarak ve okunabilir bir formatta ekrana dökülür.
 
 ---
 
-## ⚖️ 6. Etik, Güvenlik ve Sorumluluk (10 Puan)
-- **Halüsinasyon Önleme (Grounding):** AI'ın sadece bulduğu gerçek kararlar/linkler üzerinden konuşmasını, bilmediği yerde "Emsal bulunamadı" demesini zorunlu kılıyoruz. (Grounding with Google Search).
-- **Sorumluluk Reddi (Disclaimer / Human-in-the-loop):** Platform bir "Hakim veya Avukat" değildir, yalnızca bir "Araştırma Asistanı"dır. Son kararın ve teyidin avukat tarafından yapılması gerektiği sistemde uyarı olarak gösterilir.
-- **Veri Gizliliği:** Kullanıcıların girdiği hukuki olaylar veya kişisel veriler, yapay zeka modellerini eğitmek için **kesinlikle saklanmaz**.
+## 🛠️ Kullanılan Teknolojiler (Tech Stack)
+
+| Katman | Teknoloji | Açıklama |
+| :--- | :--- | :--- |
+| **Frontend** | React, Vite, Tailwind CSS | Hızlı, modern ve responsive kullanıcı arayüzü |
+| **Backend** | Python, FastAPI, Uvicorn | Yüksek performanslı, asenkron API ve SSE desteği |
+| **Yapay Zeka** | Google Gemini 2.5 Flash Lite API | Semantik arama, metin analizi ve Google Search Grounding |
+| **Veritabanı & Auth** | Supabase | Güvenli kullanıcı kimlik doğrulaması ve arama geçmişi loglama |
+| **Araçlar** | Axios, html2pdf.js, Lucide Icons | API haberleşmesi, PDF export ve arayüz ikonları |
+
+---
+
+## 💻 Proje Kurulumu ve Çalıştırma
+
+Projeyi kendi bilgisayarınızda çalıştırmak için aşağıdaki adımları izleyin:
+
+### Ön Koşullar
+- [Node.js](https://nodejs.org/) (v16 veya üzeri)
+- [Python](https://www.python.org/) (v3.8 veya üzeri)
+- Supabase hesabı ve projesi (Auth ve DB için)
+- Google Gemini API Key
+
+### 1. Backend Kurulumu (FastAPI)
+```bash
+# Backend klasörüne gidin
+cd backend
+
+# Sanal ortam (virtual environment) oluşturun
+python -m venv venv
+
+# Sanal ortamı aktifleştirin (Mac/Linux)
+source venv/bin/activate
+# (Windows için: venv\Scripts\activate)
+
+# Gerekli kütüphaneleri yükleyin
+pip install -r requirements.txt
+```
+
+**Ortam Değişkenleri (.env):**
+`backend` klasörü içerisine `.env` adında bir dosya oluşturun ve API anahtarınızı ekleyin:
+```env
+API_KEY=sizin_gemini_api_anahtariniz
+# Opsiyonel: API_KEY_2=sizin_ikinci_api_anahtariniz
+# Google Service Account JSON Dosyası için örnek path:
+# GOOGLE_APPLICATION_CREDENTIALS="../dontsmoke-xyz.json"
+```
+
+**Sunucuyu Başlatma:**
+```bash
+uvicorn main:app --reload
+# API, http://127.0.0.1:8000 adresinde ayağa kalkacaktır.
+```
+
+### 2. Frontend Kurulumu (React/Vite)
+Yeni bir terminal penceresinde:
+```bash
+# Frontend klasörüne gidin
+cd frontend
+
+# Bağımlılıkları yükleyin
+npm install
+```
+
+**Ortam Değişkenleri (.env):**
+`frontend` klasöründe `.env` (veya `.env.local`) dosyası oluşturun:
+```env
+VITE_SUPABASE_URL=sizin_supabase_proje_url'niz
+VITE_SUPABASE_ANON_KEY=sizin_supabase_anon_anahtariniz
+```
+
+**Uygulamayı Başlatma:**
+```bash
+npm run dev
+# Uygulama http://localhost:5173 adresinde çalışacaktır.
+```
+
+---
+
+## 📂 Proje Klasör Yapısı
+
+```text
+Emsal.AI/
+├── backend/                 # Python/FastAPI Backend Dosyaları
+│   ├── main.py              # API Endpoint'leri ve SSE Akış Mantığı
+│   └── requirements.txt     # Python bağımlılıkları
+├── frontend/                # React/Vite Frontend Dosyaları
+│   ├── src/
+│   │   ├── components/      # UI Bileşenleri (LawTab, PrecedentTab vb.)
+│   │   ├── App.jsx          # Ana Uygulama Dosyası
+│   │   └── supabaseClient.js# Supabase Bağlantı Konfigürasyonu
+│   ├── package.json         # Node.js bağımlılıkları
+│   └── vite.config.js       # Vite ayarları
+├── scripts/                 # Kod manipülasyonu ve otomasyon scriptleri
+│   └── patch_*.py           # Kod değiştirici Python scriptleri
+├── docs.md                  # Proje takip ve notasyon dökümanı
+└── README.md                # Şu an okuduğunuz döküman
+```
+
+---
+
+## ⚖️ Yasal Uyarı (Sorumluluk Reddi)
+
+**Emsal.AI**, yapay zeka destekli bir "Hukuki Araştırma ve Analiz Asistanı"dır. Üretilen içerikler, kanun maddeleri veya sunulan emsal kararlar **hukuki tavsiye veya mütalaa niteliği taşımaz**. 
+Hukuki bir aksiyon almadan önce tüm bulguların yetkili bir avukat veya hukuk profesyoneli tarafından teyit edilmesi zorunludur. Sistem, doğabilecek maddi veya manevi zararlardan sorumlu tutulamaz.
+
+---
+
+## 👥 Ekip (DONTSMOKE)
+Bu proje **GDG Hackathon** kapsamında geliştirilmiştir.
