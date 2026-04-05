@@ -1,4 +1,4 @@
-import { Star, ShieldAlert, Scale } from 'lucide-react';
+import { Star, ShieldAlert, Scale, ExternalLink } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 
 export default function PrecedentTab({ markdown }) {
@@ -26,6 +26,18 @@ export default function PrecedentTab({ markdown }) {
            <div>
               <p className="text-xs text-amber-800/80 dark:text-amber-200/80 font-medium">Bu platform bir "Hakim" veya "Avukat" değildir, yalnızca bir "Araştırma Asistanı"dır. Çıkan sonuçlar sadece yasal süreç incelemelerini desteklemek amaçlıdır.</p>
            </div>
+        </div>
+
+        {/* Bibliography / Ref Link */}
+        <div className="mt-6 flex justify-end">
+          <a
+            href="https://karararama.yargitay.gov.tr/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 text-sm font-medium text-amber-700 dark:text-amber-400 hover:text-amber-900 dark:hover:text-amber-300 transition-colors"
+          >
+            Detaylı Emsal Karar Kaynakçası <ExternalLink size={16} />
+          </a>
         </div>
       </div>
     </div>
