@@ -431,9 +431,9 @@ function App() {
       {/* GLOBAL SABİT ARKA PLAN YAZISI (PARALLAX + İTALİK FONT) */}
       <div className="fixed inset-0 flex items-center justify-center pointer-events-none select-none z-0 opacity-30 dark:opacity-5 overflow-hidden w-full h-full p-4 print:hidden">
         <span 
-          className="text-slate-300 dark:text-white font-bold italic text-center whitespace-nowrap pt-32"
+          className="text-slate-300 dark:text-white font-bold italic text-center whitespace-normal pt-[70vh] px-4"
           style={{ 
-            fontSize: 'clamp(3rem, 10vw, 8rem)', 
+            fontSize: 'clamp(2.5rem, 8.5vw, 6.5rem)', 
             fontFamily: '"Georgia", "Times New Roman", serif', 
             transform: `translateY(${-scrollY * 0.20}px) skewX(-10deg)` 
           }}
