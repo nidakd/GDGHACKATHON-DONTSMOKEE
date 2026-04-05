@@ -116,6 +116,8 @@ function App() {
   const searchRef = useRef(null);
   const pdfRef = useRef(null);
   const [scrollY, setScrollY] = useState(0);
+  const [scrollDirection, setScrollDirection] = useState('up');
+  const [scrollProgress, setScrollProgress] = useState(0);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session }, error }) => {
@@ -141,10 +143,30 @@ function App() {
 
   useEffect(() => {
     let ticking = false;
+    let lastScrollYVal = window.scrollY;
+
     const handleScroll = () => {
       if (!ticking) {
         window.requestAnimationFrame(() => {
-          setScrollY(window.scrollY);
+          const currentScrollY = window.scrollY;
+          setScrollY(currentScrollY);
+
+          // 1. Akıllı Gizlenen Header (Scroll Yönü)
+          if (currentScrollY > lastScrollYVal + 10) {
+            setScrollDirection('down');
+          } else if (currentScrollY < lastScrollYVal - 10 || currentScrollY < 10) {
+            setScrollDirection('up');
+          }
+          lastScrollYVal = currentScrollY;
+
+          // 2. Okuma İlerleme Çubuğu (Reading Progress)
+          const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+          if (scrollHeight > 0) {
+            setScrollProgress((currentScrollY / scrollHeight) * 100);
+          } else {
+            setScrollProgress(0);
+          }
+
           ticking = false;
         });
         ticking = true;
@@ -453,9 +475,20 @@ function App() {
 
       
       {/* HEADER / NAVBAR */}
-      <nav className={`fixed top-0 w-full z-50 transition-all duration-500 ease-in-out print:hidden ${scrollY > 20 ? 'bg-white/85 dark:bg-slate-950/85 backdrop-blur-xl border-b border-slate-200/80 dark:border-slate-800/80 shadow-lg shadow-slate-200/50 dark:shadow-black/40 py-0' : 'bg-white/40 dark:bg-slate-950/40 backdrop-blur-md border-b border-transparent py-2'}`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16 transition-all duration-300">
+      <nav className={`fixed top-0 w-full z-50 transition-all duration-500 ease-[cubic-bezier(0.25,0.1,0.25,1.0)] print:hidden ${
+        scrollDirection === 'down' && scrollY > 100 ? '-translate-y-full' : 'translate-y-0'
+      } ${
+        scrollY > 20 
+          ? 'bg-white/85 dark:bg-slate-950/85 backdrop-blur-xl border-b border-slate-200/80 dark:border-slate-800/80 shadow-lg shadow-slate-200/50 dark:shadow-black/40 py-0' 
+          : 'bg-white/40 dark:bg-slate-950/40 backdrop-blur-md border-b border-transparent py-2'
+      }`}>
+        {/* Spotlight Effect (Sadece en tepedeyken arka planda hafifçe yanan ışık hüzmesi) */}
+        <div className={`absolute inset-0 overflow-hidden pointer-events-none transition-opacity duration-700 -z-10 ${scrollY < 20 ? 'opacity-100' : 'opacity-0'}`}>
+          <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-96 h-48 bg-gradient-to-b from-[#9C1A15]/20 to-transparent dark:from-[#FFC000]/10 rounded-full blur-3xl"></div>
+        </div>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className={`flex justify-between items-center transition-all duration-500 ${scrollY > 20 ? 'h-14' : 'h-20'}`}>
             <div className="flex items-center space-x-4">
               {user && (
                 <button onClick={() => setIsSidebarOpen(true)} className="text-slate-600 dark:text-slate-400 hover:text-[#9C1A15] transition-all duration-300 active:scale-90 p-2 -ml-2 focus:outline-none rounded-full hover:bg-slate-100 dark:hover:bg-slate-800">
@@ -463,47 +496,61 @@ function App() {
                 </button>
               )}
               <div className="flex items-center space-x-2 cursor-pointer group" onClick={handleGoHome}>
-                <div className="bg-gradient-to-br from-[#9C1A15] to-[#7a1410] p-2 rounded-xl text-white shadow-md shadow-[#9C1A15]/30 group-hover:shadow-lg group-hover:shadow-[#9C1A15]/50 group-hover:-translate-y-0.5 transition-all duration-300">
-                  <Scale size={24} className="transform group-hover:rotate-[-5deg] transition-transform duration-300" />
+                <div className={`bg-gradient-to-br from-[#9C1A15] to-[#7a1410] rounded-xl text-white shadow-md shadow-[#9C1A15]/30 group-hover:shadow-lg group-hover:shadow-[#9C1A15]/50 group-hover:-translate-y-0.5 transition-all duration-500 ${scrollY > 20 ? 'p-1.5' : 'p-2.5'}`}>
+                  <Scale size={scrollY > 20 ? 20 : 24} className="transform group-hover:rotate-[-5deg] transition-transform duration-300" />
                 </div>
-                <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#9C1A15] to-[#5c0f0c] dark:from-red-400 dark:to-red-600 transition-all duration-300 group-hover:scale-[1.02]" style={{ fontFamily: '"Times New Roman", Times, serif' }}>
+                <span className={`font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#9C1A15] to-[#5c0f0c] dark:from-red-400 dark:to-red-600 transition-all duration-500 group-hover:scale-[1.02] ${scrollY > 20 ? 'text-xl' : 'text-2xl'}`} style={{ fontFamily: '"Times New Roman", Times, serif' }}>
                   Emsal.AI
                 </span>
               </div>
             </div>
-            <div className="hidden md:flex items-center space-x-6">
-              <a href="#arama-motorlari" className="text-base font-bold text-slate-600 hover:text-[#9C1A15] dark:text-slate-400 dark:hover:text-[#FFC000] transition-colors relative group">
+            <div className="hidden md:flex items-center space-x-4 lg:space-x-6">
+              <a href="#arama-motorlari" className="text-sm lg:text-base font-bold text-slate-600 hover:text-[#9C1A15] dark:text-slate-400 dark:hover:text-[#FFC000] transition-colors relative group">
                 Nasıl Çalışır?
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#9C1A15] dark:bg-[#FFC000] transition-all duration-300 group-hover:w-full"></span>
               </a>
 
+              {/* YENİ ARAMA BUTONU - Kaydırınca görünür */}
+              <div className={`transition-all items-center duration-500 overflow-hidden ${scrollY > 200 ? 'opacity-100 translate-x-0 w-auto px-2' : 'opacity-0 translate-x-4 w-0 px-0'}`}>
+                <button 
+                  onClick={() => {
+                    handleGoHome();
+                    setTimeout(() => searchRef.current?.scrollIntoView({ behavior: 'smooth' }), 100);
+                  }}
+                  className="flex items-center gap-1.5 px-3 py-1.5 lg:px-4 lg:py-2 text-xs lg:text-sm font-bold text-white bg-gradient-to-r from-[#9C1A15] to-[#7a1410] hover:from-[#7a1410] hover:to-[#5c0f0c] dark:from-[#FFC000] dark:to-yellow-500 dark:text-slate-900 rounded-full shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 active:scale-95 flex-shrink-0 whitespace-nowrap"
+                >
+                  <Search size={14} />
+                  <span>Yeni Arama</span>
+                </button>
+              </div>
+
               {/* DARK MODE TOGGLE BUTTON */}
               <button
                 onClick={() => setIsDarkMode(!isDarkMode)}
-                className="p-2.5 rounded-full bg-slate-100/80 dark:bg-slate-800/80 text-slate-600 dark:text-[#FFC000] hover:bg-slate-200 dark:hover:bg-slate-700 transition-all duration-300 hover:shadow-sm hover:rotate-12 active:scale-95"
+                className={`rounded-full bg-slate-100/80 dark:bg-slate-800/80 text-slate-600 dark:text-[#FFC000] hover:bg-slate-200 dark:hover:bg-slate-700 transition-all duration-300 hover:shadow-sm hover:rotate-12 active:scale-95 flex-shrink-0 ${scrollY > 20 ? 'p-2' : 'p-2.5'}`}
                 title="Koyu / Açık Mod Değiştir"
               >
-                {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
+                {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
               </button>
 
               {user ? (
-                <div className="flex items-center space-x-4 ml-4 pl-4 border-l border-slate-300 dark:border-slate-600">
+                <div className="flex items-center space-x-4 ml-2 lg:ml-4 pl-4 border-l border-slate-300 dark:border-slate-600">
                   {user.user_metadata?.avatar_url && (
-                    <img src={user.user_metadata.avatar_url} referrerPolicy="no-referrer" alt="Profil" className="w-10 h-10 rounded-full border-2 border-[#9C1A15] shadow-sm object-cover" />
+                    <img src={user.user_metadata.avatar_url} referrerPolicy="no-referrer" alt="Profil" className={`rounded-full border-2 border-[#9C1A15] shadow-sm object-cover transition-all duration-500 ${scrollY > 20 ? 'w-8 h-8' : 'w-10 h-10'}`} />
                   )}
                   <div className="flex flex-col">
-                    <span className="text-slate-800 dark:text-slate-200 font-bold text-sm">{user.user_metadata?.full_name || user.email?.split('@')[0]}</span>
+                    <span className="text-slate-800 dark:text-slate-200 font-bold text-sm leading-tight">{user.user_metadata?.full_name || user.email?.split('@')[0]}</span>
                     <div className="flex items-center gap-2 mt-0.5">
                       <button 
                         onClick={handleChangeAccount}
-                        className="text-xs text-[#9C1A15] hover:text-[#7a1410] dark:text-red-400 dark:hover:text-red-300 text-left transition-colors font-medium"
+                        className="text-[11px] text-[#9C1A15] hover:text-[#7a1410] dark:text-red-400 dark:hover:text-red-300 text-left transition-colors font-medium leading-tight hover:underline"
                       >
                         Hesap Değiştir
                       </button>
-                      <span className="text-slate-300 text-xs">|</span>
+                      <span className="text-slate-300 text-[11px] leading-tight">|</span>
                       <button 
                         onClick={handleLogout}
-                        className="text-xs text-slate-500 dark:text-slate-400 hover:text-[#9C1A15] text-left transition-colors font-medium"
+                        className="text-[11px] text-slate-500 dark:text-slate-400 hover:text-[#9C1A15] text-left transition-colors font-medium leading-tight hover:underline"
                       >
                         Çıkış Yap
                       </button>
@@ -513,16 +560,27 @@ function App() {
               ) : (
                 <button 
                   onClick={handleGoogleLogin}
-                  className="flex items-center gap-2 px-4 py-2 text-sm font-semibold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all duration-300 ease-out active:scale-95"
+                  className={`flex items-center gap-2 font-semibold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-full shadow-sm border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all duration-300 ease-out active:scale-95 ml-2 lg:ml-4 flex-shrink-0 ${scrollY > 20 ? 'px-3 py-1.5 text-xs' : 'px-4 py-2 text-sm'}`}
                 >
                   <img src="https://www.google.com/favicon.ico" alt="Google" className="w-4 h-4" />
-                  Google ile Giriş Yap
+                  <span className="hidden sm:inline">Google ile Giriş</span>
                 </button>
               )}
             </div>
           </div>
         </div>
+
+        {/* 2. Okuma İlerleme Çubuğu (Reading Progress Bar) */}
+        <div className="h-[3px] bg-transparent w-full absolute bottom-[-3px] left-0 overflow-hidden z-20">
+          <div 
+            className="h-full bg-gradient-to-r from-[#9C1A15] to-[#FFC000] opacity-90 transition-all duration-[50ms] ease-linear rounded-r-full"
+            style={{ width: `${scrollProgress}%` }}
+          ></div>
+        </div>
       </nav>
+
+      {/* YER TUTUCU - SABİT HEADER BOŞLUĞU */}
+      <div className="h-14"></div>
 
       {/* APP INTERFACE (Brought to the very top as requested) */}
       <section ref={searchRef} className="min-h-screen flex flex-col justify-center bg-transparent relative pt-24 pb-12 overflow-hidden z-10">
