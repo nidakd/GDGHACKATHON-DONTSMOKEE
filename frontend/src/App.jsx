@@ -236,34 +236,11 @@ function App() {
   };
 
   const handleExportPDF = async () => {
-    if (!pdfRef.current) return;
-
-    try {
-      // Vite/ESM modül çakışmalarını önlemek için doğrudan CDN üzerinden yükleme
-      if (typeof window.html2pdf === 'undefined') {
-        await new Promise((resolve, reject) => {
-          const script = document.createElement('script');
-          script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
-          script.onload = resolve;
-          script.onerror = () => reject(new Error("CDN betiği yüklenemedi"));
-          document.head.appendChild(script);
-        });
-      }
-
-      const opt = {
-        margin: [0.5, 0.5, 0.5, 0.5],
-        filename: 'Emsal_AI_Analiz_Raporu.pdf',
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true, logging: false },
-        jsPDF: { unit: 'in', format: 'A4', orientation: 'portrait' }
-      };
-
-      await window.html2pdf().set(opt).from(pdfRef.current).save();
-      
-    } catch (err) {
-      console.error("PDF Dışa Aktarma Hatası:", err);
-      alert("PDF dosyası oluşturulurken teknik bir hata oldu. Hata detayı: " + err.message);
-    }
+    // Tailwind CSS v4'ün yeni "oklch()" renk fonksiyonu henüz harici kütüphaneler 
+    // (html2canvas/html2pdf) tarafından desteklenmiyor. Bu nedenle çok daha stabil, 
+    // vektörel tabanlı ve metinleri seçilebilir kılan yerel tarayıcı (PDF) 
+    // yazdırma işlevini (window.print) kullanıyoruz. 
+    window.print();
   };
 
   const streamEndpoint = async (url, queryText, setPartialContent) => {
@@ -582,14 +559,14 @@ function App() {
 
                   {/* PDF İÇİN REF ALANI */}
                   {/* Geri plan rengi beyaz */}
-                  <div ref={pdfRef} className="grid md:grid-cols-12 gap-8 p-6 bg-white dark:bg-slate-800 rounded-2xl">
+                  <div id="pdf-content" ref={pdfRef} className="grid md:grid-cols-12 gap-8 p-6 bg-white dark:bg-slate-800 rounded-2xl print:block print:bg-white print:text-black">
                     {/* Kanunlar (Sol Kolon) */}
-                    <div className="md:col-span-4 relative">
+                    <div className="md:col-span-4 relative print:w-full print:mb-8">
                       <LawTab markdown={results.lawsMarkdown} />
                     </div>
                     
                     {/* Emsal Kararlar (Sağ Kolon) */}
-                    <div className="md:col-span-8 flex flex-col">
+                    <div className="md:col-span-8 flex flex-col print:w-full print:border-t print:pt-8 print:border-slate-300">
                       <div className="flex-1">
                         <PrecedentTab markdown={results.precedentsMarkdown} />
                       </div>
