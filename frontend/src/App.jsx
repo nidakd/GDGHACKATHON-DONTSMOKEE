@@ -413,13 +413,13 @@ function App() {
       </div>
 
       {/* GLOBAL SABİT ARKA PLAN YAZISI (PARALLAX + İTALİK FONT) */}
-      <div className="fixed inset-0 flex items-center justify-center pointer-events-none select-none z-0 opacity-10 dark:opacity-5 overflow-hidden">
+      <div className="fixed inset-0 flex items-center justify-center pointer-events-none select-none z-0 opacity-30 dark:opacity-5 overflow-hidden w-full h-full p-4">
         <span 
-          className="text-slate-200 dark:text-white font-bold italic text-center px-4 whitespace-nowrap"
+          className="text-slate-300 dark:text-white font-bold italic text-center break-words leading-tight"
           style={{ 
-            fontSize: 'clamp(2.5rem, 8vw, 10rem)', 
+            fontSize: 'clamp(3rem, 10vw, 8rem)', 
             fontFamily: '"Georgia", "Times New Roman", serif', 
-            transform: `translateY(${-scrollY * 0.20}px) skewX(-15deg)` 
+            transform: `translateY(${-scrollY * 0.20}px) skewX(-10deg)` 
           }}
         >
           Adalet Mülkün Temelidir
