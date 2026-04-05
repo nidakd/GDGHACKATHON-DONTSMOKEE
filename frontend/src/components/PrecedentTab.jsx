@@ -4,17 +4,13 @@ import ReactMarkdown from 'react-markdown';
 export default function PrecedentTab({ markdown }) {
   if (!markdown) return <p className="text-slate-500 dark:text-slate-400">Uygun emsal karar bulunamadı.</p>;
 
-  // Try to find an Esas/Karar number to link directly, or fallback to the decision title
-  const getSearchUrl = (text) => {
+  // Try to find an Esas/Karar number to display for easy copying
+  const getEsasNo = (text) => {
     const esasMatch = text.match(/(Esas|E\.)[^\d]*(\d{4}\/\d+)/i);
-    const query = esasMatch 
-      ? `Yargıtay Kararı Esas ${esasMatch[2]}` 
-      : text.split('\n').map(line => line.replace(/#/g, '').trim()).filter(Boolean)[0] || 'Yargıtay Emsal Kararı';
-    
-    return `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+    return esasMatch ? esasMatch[2] : null;
   };
 
-  const dynamicLink = getSearchUrl(markdown);
+  const extractedEsas = getEsasNo(markdown);
 
   return (
     <div className="space-y-8">
@@ -41,14 +37,19 @@ export default function PrecedentTab({ markdown }) {
         </div>
 
         {/* Bibliography / Ref Link */}
-        <div className="mt-6 flex justify-end">
+        <div className="mt-6 flex flex-col items-end gap-2">
+          {extractedEsas && (
+            <div className="text-xs text-amber-800/80 dark:text-amber-200/80 bg-amber-100/50 dark:bg-amber-900/30 px-3 py-1.5 rounded-lg border border-amber-300/50 dark:border-amber-700/50">
+              Sorgulama İçin Esas No: <span className="font-bold select-all ml-1">{extractedEsas}</span>
+            </div>
+          )}
           <a
-            href={dynamicLink}
+            href="https://karararama.yargitay.gov.tr/"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 text-sm font-medium text-amber-700 dark:text-amber-400 hover:text-amber-900 dark:hover:text-amber-300 transition-colors"
           >
-            Direkt Emsal Karara Git <ExternalLink size={16} />
+            Yargıtay Sisteminde Görüntüle <ExternalLink size={16} />
           </a>
         </div>
       </div>
