@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { supabase } from './supabaseClient';
 import LawTab from './components/LawTab';
 import PrecedentTab from './components/PrecedentTab';
-import { Menu, X, History, Trash2,  Bot, Scale, Search, Shield, Sparkles, BookOpen, BrainCircuit, ArrowRight, Loader, ShieldCheck, Download, Gavel, FileText, Users, Clock, Database, Award, ChevronDown } from 'lucide-react';
+import { Menu, X, History, Trash2,  Bot, Scale, Search, Shield, Sparkles, BookOpen, BrainCircuit, ArrowRight, Loader, ShieldCheck, Download, Gavel, FileText, Users, Clock, Database, Award, ChevronDown, Sun, Moon } from 'lucide-react';
 import axios from 'axios';
 import html2pdf from 'html2pdf.js';
 
@@ -94,6 +94,25 @@ function App() {
   const [isSearching, setIsSearching] = useState(false);
   const [results, setResults] = useState(null);
   const [error, setError] = useState('');
+
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('darkMode') === 'true' || 
+        (!('darkMode' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    const root = window.document.documentElement;
+    if (isDarkMode) {
+      root.classList.add('dark');
+      localStorage.setItem('darkMode', 'true');
+    } else {
+      root.classList.remove('dark');
+      localStorage.setItem('darkMode', 'false');
+    }
+  }, [isDarkMode]);
 
   const searchRef = useRef(null);
   const pdfRef = useRef(null);
@@ -336,19 +355,19 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-800 selection:bg-[#FFC000]/30 selection:text-[#9C1A15] relative" style={{ fontFamily: '"Times New Roman", Times, serif' }}>
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200 selection:bg-[#FFC000]/30 selection:text-[#9C1A15] relative" style={{ fontFamily: '"Times New Roman", Times, serif' }}>
       {/* HOŞGELDİN TOAST (POPUP) BİLDİRİMİ */}
-      <div className={`fixed top-12 left-1/2 -translate-x-1/2 z-[100] bg-white/95 backdrop-blur-lg border border-[#9C1A15]/10 shadow-[0_8px_30px_rgb(0,0,0,0.12)] rounded-full pr-8 pl-3 py-3 flex items-center space-x-4 transform transition-all duration-700 ease-out ${showWelcome ? 'translate-y-0 opacity-100 scale-100' : '-translate-y-16 opacity-0 scale-95 pointer-events-none'}`}>
+      <div className={`fixed top-12 left-1/2 -translate-x-1/2 z-[100] bg-white dark:bg-slate-800/95 backdrop-blur-lg border border-[#9C1A15]/10 shadow-[0_8px_30px_rgb(0,0,0,0.12)] rounded-full pr-8 pl-3 py-3 flex items-center space-x-4 transform transition-all duration-700 ease-out ${showWelcome ? 'translate-y-0 opacity-100 scale-100' : '-translate-y-16 opacity-0 scale-95 pointer-events-none'}`}>
         {user?.user_metadata?.avatar_url ? (
            <img src={user.user_metadata.avatar_url} referrerPolicy="no-referrer" alt="Avatar" className="w-12 h-12 rounded-full ring-2 ring-white shadow-md object-cover" />
         ) : (
            <div className="bg-gradient-to-br from-[#9C1A15] to-[#c7261d] text-white p-3 rounded-full shadow-md"><Sparkles size={20} /></div>
         )}
         <div className="flex flex-col justify-center">
-          <h4 className="text-base font-bold text-slate-800 tracking-tight flex items-center gap-1.5 font-sans leading-none">
+          <h4 className="text-base font-bold text-slate-800 dark:text-slate-200 tracking-tight flex items-center gap-1.5 font-sans leading-none">
             Hoşgeldin, <span className="text-[#9C1A15]">{user?.user_metadata?.full_name?.split(' ')[0] || 'Kullanıcı'}</span> 👋
           </h4>
-          <span className="text-xs text-slate-500 font-medium font-sans mt-1">Emsal.AI oturumun başarıyla açıldı.</span>
+          <span className="text-xs text-slate-500 dark:text-slate-400 font-medium font-sans mt-1">Emsal.AI oturumun başarıyla açıldı.</span>
         </div>
       </div>
 
@@ -356,25 +375,25 @@ function App() {
 
       {/* SIDEBAR (HISTORY) */}
       <div className={`fixed inset-0 bg-slate-900/40 z-[60] backdrop-blur-sm transition-opacity duration-300 ${isSidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} onClick={() => setIsSidebarOpen(false)}></div>
-      <div className={`fixed top-0 left-0 w-80 sm:w-96 h-full bg-white z-[70] shadow-2xl transform transition-transform duration-300 flex flex-col ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-        <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-          <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2"><History size={20} className="text-[#9C1A15]" /> Geçmiş Sorgular</h2>
+      <div className={`fixed top-0 left-0 w-80 sm:w-96 h-full bg-white dark:bg-slate-800 z-[70] shadow-2xl transform transition-transform duration-300 flex flex-col ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+        <div className="p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-900">
+          <h2 className="text-lg font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2"><History size={20} className="text-[#9C1A15]" /> Geçmiş Sorgular</h2>
           <button onClick={() => setIsSidebarOpen(false)} className="text-slate-400 hover:text-slate-800 p-1 rounded-md transition-colors"><X size={24}/></button>
         </div>
         <div className="flex-1 overflow-y-auto p-4 space-y-3">
           {!user ? (
-             <div className="text-center text-sm text-slate-500 mt-10">Geçmişi görmek için giriş yapın.</div>
+             <div className="text-center text-sm text-slate-500 dark:text-slate-400 mt-10">Geçmişi görmek için giriş yapın.</div>
           ) : searchHistory.length === 0 ? (
-             <div className="text-center text-sm text-slate-500 mt-10 p-6 bg-slate-50 rounded-xl border border-dashed border-slate-200">
+             <div className="text-center text-sm text-slate-500 dark:text-slate-400 mt-10 p-6 bg-slate-50 dark:bg-slate-900 rounded-xl border border-dashed border-slate-200 dark:border-slate-700">
                Burada henüz işlem bulunmuyor.<br/><br/>Hemen bir hukuki olay aratın!
              </div>
           ) : (
             searchHistory.map((item) => (
-              <div key={item.id} onClick={() => loadHistoryItem(item)} className="p-4 border border-slate-200 rounded-xl hover:border-[#9C1A15]/40 hover:bg-slate-50 hover:shadow-sm cursor-pointer transition-all group relative overflow-hidden">
+              <div key={item.id} onClick={() => loadHistoryItem(item)} className="p-4 border border-slate-200 dark:border-slate-700 rounded-xl hover:border-[#9C1A15]/40 hover:bg-slate-50 hover:shadow-sm cursor-pointer transition-all group relative overflow-hidden">
                  <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#9C1A15] transform -translate-x-full group-hover:translate-x-0 transition-transform"></div>
                  
                  <div className="flex justify-between items-start gap-4">
-                   <p className="text-sm font-medium text-slate-700 line-clamp-3 group-hover:text-[#9C1A15] transition-colors leading-relaxed">{item.query}</p>
+                   <p className="text-sm font-medium text-slate-700 dark:text-slate-200 line-clamp-3 group-hover:text-[#9C1A15] transition-colors leading-relaxed">{item.query}</p>
                    <button 
                      onClick={(e) => handleDeleteHistoryItem(e, item.id)}
                      className="text-slate-300 hover:text-red-500 hover:bg-red-50 p-1.5 rounded-md transition-all opacity-0 group-hover:opacity-100 flex-shrink-0"
@@ -409,7 +428,7 @@ function App() {
 
       
       {/* HEADER / NAVBAR */}
-      <nav className="fixed top-0 w-full z-50 bg-white/90 backdrop-blur-md border-b border-slate-200">
+      <nav className="fixed top-0 w-full z-50 bg-white dark:bg-slate-800/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-4">
@@ -428,9 +447,19 @@ function App() {
               </div>
             </div>
             <div className="hidden md:flex items-center space-x-6">
-              <a href="#arama-motorlari" className="text-lg font-bold text-slate-600 hover:text-[#9C1A15] transition-colors">Nasıl Çalışır?</a>
+              <a href="#arama-motorlari" className="text-lg font-bold text-slate-600 dark:text-slate-300\b hover:text-[#9C1A15] dark:hover:text-[#FFC000] transition-colors">Nasıl Çalışır?</a>
+
+              {/* DARK MODE TOGGLE BUTTON */}
+              <button
+                onClick={() => setIsDarkMode(!isDarkMode)}
+                className="p-2 rounded-full bg-slate-100 dark:bg-slate-800\b text-slate-600 dark:text-slate-300 dark:text-[#FFC000] hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+                title="Koyu / Açık Mod Değiştir"
+              >
+                {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
+              </button>
+
               {user ? (
-                <div className="flex items-center space-x-4 ml-4 pl-4 border-l border-slate-300">
+                <div className="flex items-center space-x-4 ml-4 pl-4 border-l border-slate-300 dark:border-slate-600 dark:border-slate-700">
                   {user.user_metadata?.avatar_url && (
                     <img src={user.user_metadata.avatar_url} referrerPolicy="no-referrer" alt="Profil" className="w-10 h-10 rounded-full border-2 border-[#9C1A15] shadow-sm object-cover" />
                   )}
@@ -446,7 +475,7 @@ function App() {
                       <span className="text-slate-300 text-xs">|</span>
                       <button 
                         onClick={handleLogout}
-                        className="text-xs text-slate-500 hover:text-[#9C1A15] text-left transition-colors font-medium"
+                        className="text-xs text-slate-500 dark:text-slate-400 hover:text-[#9C1A15] text-left transition-colors font-medium"
                       >
                         Çıkış Yap
                       </button>
@@ -456,7 +485,7 @@ function App() {
               ) : (
                 <button 
                   onClick={handleGoogleLogin}
-                  className="flex items-center gap-2 px-4 py-2 text-sm font-semibold bg-white text-slate-700 rounded-lg shadow-sm border border-slate-200 hover:bg-slate-50 transition-colors"
+                  className="flex items-center gap-2 px-4 py-2 text-sm font-semibold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 hover:bg-slate-50 transition-colors"
                 >
                   <img src="https://www.google.com/favicon.ico" alt="Google" className="w-4 h-4" />
                   Google ile Giriş Yap
@@ -476,7 +505,7 @@ function App() {
           
           <div className="text-center mb-8">
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-[#9C1A15] tracking-tight mb-4" style={{ fontFamily: '"Times New Roman", Times, serif' }}>Hukuki Olayı Anlatın</h1>
-            <p className="text-xl text-slate-500 max-w-3xl mx-auto leading-relaxed">Kısa ama detaylı şekilde müvekkilinizin veya karşılaştığınız durumu buraya yazın. Çift yönlü motorumuz saniyeler içinde kanunları ve emsalleri bulsun.</p>
+            <p className="text-xl text-slate-500 dark:text-slate-400 max-w-3xl mx-auto leading-relaxed">Kısa ama detaylı şekilde müvekkilinizin veya karşılaştığınız durumu buraya yazın. Çift yönlü motorumuz saniyeler içinde kanunları ve emsalleri bulsun.</p>
           </div>
 
           <div className="flex flex-col flex-col-reverse justify-end w-full">
@@ -503,9 +532,9 @@ function App() {
                 <div className="space-y-8 animate-in fade-in slide-in-from-bottom-10 duration-700">
                   
                   {/* Sonuç Özeti Başlığı ve Çıktı Butonları */}
-                  <div className="flex items-center justify-between border-b border-slate-200 pb-4 mt-8">
+                  <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 pb-4 mt-8">
                     <div className="flex items-center space-x-4">
-                      <h3 className="text-3xl font-bold font-serif text-slate-900">Analiz Raporu</h3>
+                      <h3 className="text-3xl font-bold font-serif text-slate-900 dark:text-white">Analiz Raporu</h3>
                       {/* Analiz devam ediyorsa "Yazılıyor...", bittiyse "Başarıyla Tamamlandı" göster */}
                       {isSearching ? (
                         <span className="text-sm font-medium bg-blue-100 text-blue-700 px-3 py-1 rounded-full flex items-center shadow-sm border border-blue-200">
@@ -520,7 +549,7 @@ function App() {
                     {/* PDF İndir Butonu */}
                     <button 
                       onClick={handleExportPDF}
-                      className="flex items-center space-x-2 bg-white hover:bg-slate-50 text-slate-700 px-5 py-2.5 rounded-xl font-bold transition-all border border-slate-200 shadow-sm hover:shadow-md hover:border-slate-300 group"
+                      className="flex items-center space-x-2 bg-white dark:bg-slate-800 hover:bg-slate-50 text-slate-700 dark:text-slate-200 px-5 py-2.5 rounded-xl font-bold transition-all border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md hover:border-slate-300 group"
                     >
                       <Download size={18} className="text-[#9C1A15] group-hover:-translate-y-1 transition-transform" />
                       <span>PDF İndir</span>
@@ -529,7 +558,7 @@ function App() {
 
                   {/* PDF İÇİN REF ALANI */}
                   {/* Geri plan rengi beyaz */}
-                  <div ref={pdfRef} className="grid md:grid-cols-12 gap-8 p-6 bg-white rounded-2xl">
+                  <div ref={pdfRef} className="grid md:grid-cols-12 gap-8 p-6 bg-white dark:bg-slate-800 rounded-2xl">
                     {/* Kanunlar (Sol Kolon) */}
                     <div className="md:col-span-4 relative">
                       <LawTab markdown={results.lawsMarkdown} />
@@ -543,7 +572,7 @@ function App() {
                       
                       {/* Emsal Altı Özel Butonlar */}
                       {results && !isSearching && (
-                        <div className="mt-6 flex flex-wrap gap-4 pt-4 border-t border-slate-100 justify-end">
+                        <div className="mt-6 flex flex-wrap gap-4 pt-4 border-t border-slate-100 dark:border-slate-800 justify-end">
                           <button 
                             onClick={handleMoreDetails}
                             className="bg-[#9C1A15]/10 text-[#9C1A15] hover:bg-[#9C1A15]/20 font-bold px-4 py-2 rounded-xl transition-colors shadow-sm flex items-center text-sm"
@@ -554,7 +583,7 @@ function App() {
                           
                           <button 
                             onClick={handleDifferentPrecedent}
-                            className="bg-slate-100 text-slate-700 hover:bg-slate-200 font-bold px-4 py-2 rounded-xl transition-colors shadow-sm flex items-center text-sm"
+                            className="bg-slate-100 text-slate-700 dark:text-slate-200 hover:bg-slate-200 font-bold px-4 py-2 rounded-xl transition-colors shadow-sm flex items-center text-sm"
                           >
                             <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                             Farklı Bir Emsal Bul
@@ -570,7 +599,7 @@ function App() {
             </div>
 
             {/* ARAMA FORMU */}
-            <div className="bg-white rounded-3xl shadow-2xl shadow-[#9C1A15]/5 border border-slate-100 p-2 overflow-hidden transition-all duration-500 ring-4 ring-[#FFC000]/10 focus-within:ring-[#FFC000]/30 mb-8 max-w-4xl mx-auto w-full">
+            <div className="bg-white rounded-3xl shadow-2xl shadow-[#9C1A15]/5 border border-slate-100 dark:border-slate-800 p-2 overflow-hidden transition-all duration-500 ring-4 ring-[#FFC000]/10 focus-within:ring-[#FFC000]/30 mb-8 max-w-4xl mx-auto w-full">
               <form onSubmit={handleSearch} className="relative">
                 <textarea
                   value={query}
@@ -582,7 +611,7 @@ function App() {
                   }}
                   disabled={isSearching}
                   placeholder="Kısa ama detaylı şekilde müvekkilinizin veya karşılaştığınız durumu buraya yazın."
-                  className="w-full h-40 sm:h-48 resize-none p-6 text-lg text-slate-700 bg-transparent placeholder-slate-400 focus:outline-none"
+                  className="w-full h-40 sm:h-48 resize-none p-6 text-lg text-slate-700 dark:text-slate-200 bg-transparent placeholder-slate-400 focus:outline-none"
                 />
                 <div className="absolute bottom-4 right-4 flex items-center space-x-4">
                   <div className="flex items-center text-xs text-slate-400">
@@ -619,32 +648,32 @@ function App() {
       <section id="arama-motorlari" className="py-24 bg-transparent mt-12 relative z-10">
         <div className="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold font-serif text-slate-900 mb-4">Çift Yönlü Motor (Dual-Engine) Teknolojisi</h2>
+            <h2 className="text-3xl font-bold font-serif text-slate-900 dark:text-white mb-4">Çift Yönlü Motor (Dual-Engine) Teknolojisi</h2>
             <p className="text-slate-600 max-w-2xl mx-auto">Standart kelime aramalarını unutun. Emsal.AI'ın altyapısını oluşturan iki güçlü motor sayesinde davanızı hiçbir boşluk kalmayacak şekilde analiz ediyoruz.</p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
-            <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm hover:shadow-xl transition-shadow duration-300 relative overflow-hidden group">
+            <div className="bg-white p-8 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-xl transition-shadow duration-300 relative overflow-hidden group">
               <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity text-[#9C1A15]">
                 <BookOpen size={120} />
               </div>
               <div className="bg-[#9C1A15]/10 w-16 h-16 rounded-2xl flex items-center justify-center mb-6 text-[#9C1A15]">
                 <BookOpen size={32} />
               </div>
-              <h3 className="text-2xl font-bold text-slate-800 mb-3">1. Kanun Motoru</h3>
+              <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-200 mb-3">1. Kanun Motoru</h3>
               <p className="text-slate-600 leading-relaxed">
                 Yazdığınız olayı anlamsal (semantic) olarak tarar. Olayın direkt hangi kanun, yönetmelik veya madde kapsamına girdiğini tespit eder.
               </p>
             </div>
 
-            <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm hover:shadow-xl transition-shadow duration-300 relative overflow-hidden group">
+            <div className="bg-white p-8 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-xl transition-shadow duration-300 relative overflow-hidden group">
               <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity text-[#FFC000]">
                 <BrainCircuit size={120} />
               </div>
               <div className="bg-[#FFC000]/20 w-16 h-16 rounded-2xl flex items-center justify-center mb-6 text-[#9C1A15]">
                 <BrainCircuit size={32} />
               </div>
-              <h3 className="text-2xl font-bold text-slate-800 mb-3">2. Emsal & Analiz Motoru <span className="text-sm font-bold bg-gradient-to-r from-[#9C1A15] to-[#7a1410] text-[#FFC000] px-2 py-1 rounded-md ml-2 align-middle">Gemini</span></h3>
+              <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-200 mb-3">2. Emsal & Analiz Motoru <span className="text-sm font-bold bg-gradient-to-r from-[#9C1A15] to-[#7a1410] text-[#FFC000] px-2 py-1 rounded-md ml-2 align-middle">Gemini</span></h3>
               <p className="text-slate-600 leading-relaxed">
                 Google Search entegreli (Grounding) yeteneğiyle web'den emsalleri çeker. En yüksek eşleşme oranına sahip kararı "Baş Karar" olarak analiz ederek size sunar.
               </p>
@@ -662,29 +691,29 @@ function App() {
               <span>Geniş Kapsamlı Analiz</span>
             </div>
             <h2 className="text-4xl font-bold text-[#9C1A15] mb-4" style={{ fontFamily: '"Times New Roman", Times, serif' }}>Hangi Davalarda Etkili?</h2>
-            <p className="text-lg text-slate-600 max-w-2xl mx-auto">Yapay Zeka destekli arama motorumuz, tüm hukuk dallarında en güncel ve en alakalı içtihatları saniyeler içinde karşınıza çıkarır.</p>
+            <p className="text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">Yapay Zeka destekli arama motorumuz, tüm hukuk dallarında en güncel ve en alakalı içtihatları saniyeler içinde karşınıza çıkarır.</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
-            <div className="p-8 rounded-3xl bg-slate-50 border border-slate-200 hover:border-[#9C1A15]/30 hover:shadow-lg transition-all group">
+            <div className="p-8 rounded-3xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 hover:border-[#9C1A15]/30 hover:shadow-lg transition-all group">
               <div className="w-14 h-14 bg-[#FFC000]/20 rounded-2xl flex items-center justify-center text-[#9C1A15] mb-6 group-hover:scale-110 transition-transform">
                 <FileText size={28} />
               </div>
-              <h3 className="text-xl font-bold text-slate-900 mb-3" style={{ fontFamily: '"Times New Roman", Times, serif' }}>Borçlar & Ticaret Hukuku</h3>
+              <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-3" style={{ fontFamily: '"Times New Roman", Times, serif' }}>Borçlar & Ticaret Hukuku</h3>
               <p className="text-slate-600 text-base leading-relaxed">Kira uyuşmazlıkları, tahliye davaları, alacak-verecek talepleri ve şirketler arası ticari ihtilaflar için nokta atışı kanun maddeleri ve emsaller.</p>
             </div>
-            <div className="p-8 rounded-3xl bg-slate-50 border border-slate-200 hover:border-[#9C1A15]/30 hover:shadow-lg transition-all group">
+            <div className="p-8 rounded-3xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 hover:border-[#9C1A15]/30 hover:shadow-lg transition-all group">
               <div className="w-14 h-14 bg-[#FFC000]/20 rounded-2xl flex items-center justify-center text-[#9C1A15] mb-6 group-hover:scale-110 transition-transform">
                 <Users size={28} />
               </div>
-              <h3 className="text-xl font-bold text-slate-900 mb-3" style={{ fontFamily: '"Times New Roman", Times, serif' }}>İş & Sosyal Güvenlik</h3>
+              <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-3" style={{ fontFamily: '"Times New Roman", Times, serif' }}>İş & Sosyal Güvenlik</h3>
               <p className="text-slate-600 text-base leading-relaxed">Kıdem tazminatı, işe iade davaları, iş kazaları ve fazla mesai ücretlerinin hesaplanmasına temel oluşturan en güncel Yargıtay 9. Hukuk Dairesi kararları.</p>
             </div>
-            <div className="p-8 rounded-3xl bg-slate-50 border border-slate-200 hover:border-[#9C1A15]/30 hover:shadow-lg transition-all group">
+            <div className="p-8 rounded-3xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 hover:border-[#9C1A15]/30 hover:shadow-lg transition-all group">
               <div className="w-14 h-14 bg-[#FFC000]/20 rounded-2xl flex items-center justify-center text-[#9C1A15] mb-6 group-hover:scale-110 transition-transform">
                 <Scale size={28} />
               </div>
-              <h3 className="text-xl font-bold text-slate-900 mb-3" style={{ fontFamily: '"Times New Roman", Times, serif' }}>Ceza Hukuku</h3>
+              <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-3" style={{ fontFamily: '"Times New Roman", Times, serif' }}>Ceza Hukuku</h3>
               <p className="text-slate-600 text-base leading-relaxed">Dolandırıcılık, taksirle yaralama veya daha ağır ceza gerektiren davalarda TCK maddeleriyle eşleşen Yargıtay Ceza Genel Kurulu emsalleri.</p>
             </div>
           </div>
@@ -694,7 +723,7 @@ function App() {
       {/* YENİ BÖLÜM: TEKNOLOJİK ALTYAPI VE METODOLOJİ */}
       <section className="py-20 bg-[#8A1712] text-white relative overflow-hidden">
         <RevealOnScroll>
-        <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full blur-3xl transform translate-x-1/2 -translate-y-1/2"></div>
+        <div className="absolute top-0 right-0 w-64 h-64 bg-white dark:bg-slate-800 opacity-5 rounded-full blur-3xl transform translate-x-1/2 -translate-y-1/2"></div>
         <div className="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <h2 className="text-3xl font-bold text-center text-[#FFC000] mb-12" style={{ fontFamily: '"Times New Roman", Times, serif' }}>Sistemin Teknolojik Altyapısı</h2>
           <div className="grid md:grid-cols-4 gap-8 text-center divide-y md:divide-y-0 md:divide-x divide-white/20">
@@ -736,7 +765,7 @@ function App() {
         <div className="max-w-[90rem] mx-auto px-4 flex flex-col items-center">
           <Scale size={32} className="text-slate-600 mb-4" />
           <p className="mb-2 text-[#FFC000] font-bold tracking-wider">Emsal.AI - GDG Hackathon DONTSMOKE Takımı</p>
-          <p className="max-w-xl text-xs text-slate-500">Bu platform bir "Hakim veya Avukat" değildir, yalnızca bir "Araştırma Asistanı"dır. Son karar ve teyit her zaman insan tarafından yapılmalıdır.</p>
+          <p className="max-w-xl text-xs text-slate-500 dark:text-slate-400">Bu platform bir "Hakim veya Avukat" değildir, yalnızca bir "Araştırma Asistanı"dır. Son karar ve teyit her zaman insan tarafından yapılmalıdır.</p>
         </div>
       </footer>
 

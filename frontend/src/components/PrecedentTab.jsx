@@ -21,7 +21,7 @@ export default function PrecedentTab({ markdown }) {
         </div>
 
         {/* Disclaimer Section integrated directly like in original design intent */}
-        <div className="mt-8 flex items-start gap-4 p-4 bg-white/60 rounded-xl border border-amber-200/60">
+        <div className="mt-8 flex items-start gap-4 p-4 bg-white dark:bg-slate-800/60 rounded-xl border border-amber-200/60">
            <ShieldAlert size={20} className="text-amber-600 flex-shrink-0 mt-0.5" />
            <div>
               <p className="text-xs text-amber-800/80 font-medium">Bu platform bir "Hakim" veya "Avukat" değildir, yalnızca bir "Araştırma Asistanı"dır. Çıkan sonuçlar sadece yasal süreç incelemelerini desteklemek amaçlıdır.</p>
