@@ -583,7 +583,7 @@ function App() {
       <div className="h-14"></div>
 
       {/* APP INTERFACE (Brought to the very top as requested) */}
-      <section ref={searchRef} className="min-h-screen flex flex-col justify-center bg-transparent relative pt-24 pb-12 overflow-hidden z-10">
+      <section ref={searchRef} className="min-h-screen flex flex-col justify-center bg-transparent relative pt-20 pb-24 overflow-hidden z-10">
         
 
 
