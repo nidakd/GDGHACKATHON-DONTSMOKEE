@@ -54,7 +54,7 @@ export default function PrecedentTab({ markdown }) {
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 text-sm font-medium text-amber-700 dark:text-amber-400 hover:text-amber-900 dark:hover:text-amber-300 transition-colors"
           >
-            Yargıtay Sisteminde Görüntüle <ExternalLink size={16} />
+            Yargıtay Sisteminde Görüntüle {extractedEsas ? `(Esas: ${extractedEsas})` : ""} <ExternalLink size={16} />
           </a>
         </div>
       </div>
