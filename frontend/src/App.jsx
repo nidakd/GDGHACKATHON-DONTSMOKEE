@@ -4,7 +4,6 @@ import LawTab from './components/LawTab';
 import PrecedentTab from './components/PrecedentTab';
 import { Menu, X, History, Trash2,  Bot, Scale, Search, Shield, Sparkles, BookOpen, BrainCircuit, ArrowRight, Loader, ShieldCheck, Download, Gavel, FileText, Users, Clock, Database, Award, ChevronDown, Sun, Moon } from 'lucide-react';
 import axios from 'axios';
-import html2pdf from 'html2pdf.js';
 
 function AnimatedNumber({ end, prefix = '', suffix = '' }) {
   const [count, setCount] = useState(0);
@@ -229,24 +228,31 @@ function App() {
     if (error) console.error("Change account failed", error.message);
   };
 
-  const handleExportPDF = () => {
-    if (pdfRef.current) {
-      const opt = {
-        margin: 0.5,
-        filename: 'Emsal_AI_Analiz_Raporu.pdf',
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true },
-        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-      };
+  const handleGoHome = () => {
+    setQuery('');
+    setResults(null);
+    setIsSearching(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
-      // html2pdf Vite/ESM modüllerinde bazen .default olarak sarmalanabilir
-      const pdfGenerator = typeof html2pdf === 'function' ? html2pdf : html2pdf.default;
-      
+  const handleExportPDF = async () => {
+    if (pdfRef.current) {
       try {
-        pdfGenerator().set(opt).from(pdfRef.current).save();
+        const html2pdfModule = await import('html2pdf.js');
+        const pdfGenerator = html2pdfModule.default || html2pdfModule;
+        
+        const opt = {
+          margin: [0.5, 0.5, 0.5, 0.5],
+          filename: 'Emsal_AI_Analiz_Raporu.pdf',
+          image: { type: 'jpeg', quality: 0.98 },
+          html2canvas: { scale: 2, useCORS: true, logging: false },
+          jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+        };
+
+        await pdfGenerator().set(opt).from(pdfRef.current).save();
       } catch (err) {
         console.error("PDF Dışa Aktarma Hatası:", err);
-        alert("PDF oluşturulurken bir hata oluştu. Tarayıcınız desteklemiyor olabilir.");
+        alert("PDF oluşturulurken bir hata oluştu veya tarayıcınız bu eklentiyi desteklemiyor.");
       }
     }
   };
@@ -446,7 +452,7 @@ function App() {
                   <Menu size={26} />
                 </button>
               )}
-              <div className="flex items-center space-x-2 cursor-pointer" onClick={() => window.location.href = '/'}>
+              <div className="flex items-center space-x-2 cursor-pointer" onClick={handleGoHome}>
                 <div className="bg-gradient-to-br from-[#9C1A15] to-[#7a1410] p-2 rounded-lg text-white shadow-lg shadow-[#9C1A15]/30 hover:scale-105 transition-transform">
                   <Scale size={24} />
                 </div>
