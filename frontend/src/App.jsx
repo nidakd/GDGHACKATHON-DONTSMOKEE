@@ -140,10 +140,18 @@ function App() {
   }, []);
 
   useEffect(() => {
+    let ticking = false;
     const handleScroll = () => {
-      setScrollY(window.scrollY);
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          setScrollY(window.scrollY);
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
-    window.addEventListener('scroll', handleScroll);
+    // Performans için passive: true (Scroll tıkanmalarını önler)
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -405,8 +413,8 @@ function App() {
              </div>
           ) : (
             searchHistory.map((item) => (
-              <div key={item.id} onClick={() => loadHistoryItem(item)} className="p-4 border border-slate-200 dark:border-slate-700 rounded-xl hover:border-[#9C1A15]/40 hover:bg-slate-50 dark:hover:bg-slate-800 hover:shadow-sm cursor-pointer transition-all group relative overflow-hidden">
-                 <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#9C1A15] transform -translate-x-full group-hover:translate-x-0 transition-transform"></div>
+              <div key={item.id} onClick={() => loadHistoryItem(item)} className="p-4 border border-slate-200 dark:border-slate-700 rounded-xl hover:border-[#9C1A15]/40 hover:bg-slate-50 dark:hover:bg-slate-800 hover:shadow-sm cursor-pointer transition-all duration-300 ease-out active:scale-[0.98] group relative overflow-hidden">
+                 <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#9C1A15] transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-[cubic-bezier(0.25,0.1,0.25,1.0)]"></div>
                  
                  <div className="flex justify-between items-start gap-4">
                    <p className="text-sm font-medium text-slate-700 dark:text-slate-300 line-clamp-3 group-hover:text-[#9C1A15] transition-colors leading-relaxed">{item.query}</p>
@@ -435,6 +443,7 @@ function App() {
           style={{ 
             fontSize: 'clamp(2.5rem, 8.5vw, 6.5rem)', 
             fontFamily: '"Georgia", "Times New Roman", serif', 
+            willChange: 'transform', // Animasyon akıcılığı için tarayıcıyı uyar
             transform: `translateY(${-scrollY * 0.20}px) skewX(-10deg)` 
           }}
         >
@@ -501,7 +510,7 @@ function App() {
               ) : (
                 <button 
                   onClick={handleGoogleLogin}
-                  className="flex items-center gap-2 px-4 py-2 text-sm font-semibold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                  className="flex items-center gap-2 px-4 py-2 text-sm font-semibold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all duration-300 ease-out active:scale-95"
                 >
                   <img src="https://www.google.com/favicon.ico" alt="Google" className="w-4 h-4" />
                   Google ile Giriş Yap
@@ -565,7 +574,7 @@ function App() {
                     {/* PDF İndir Butonu */}
                     <button 
                       onClick={handleExportPDF}
-                      className="flex items-center space-x-2 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 px-5 py-2.5 rounded-xl font-bold transition-all border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md hover:border-slate-300 dark:hover:border-slate-500 group"
+                      className="flex items-center space-x-2 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 px-5 py-2.5 rounded-xl font-bold transition-all duration-300 ease-out active:scale-95 border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md hover:border-slate-300 dark:hover:border-slate-500 group"
                     >
                       <Download size={18} className="text-[#9C1A15] dark:text-red-400 group-hover:-translate-y-1 transition-transform" />
                       <span>PDF İndir</span>
@@ -650,7 +659,7 @@ function App() {
                   <button
                     type="submit"
                     disabled={isSearching || !query.trim()}
-                    className="group bg-gradient-to-r from-[#9C1A15] to-[#7a1410] hover:from-[#7a1410] hover:to-[#5c0f0c] dark:from-[#FFC000] dark:to-yellow-500 disabled:from-slate-300 disabled:to-slate-300 dark:disabled:from-slate-700 dark:disabled:to-slate-700 text-white dark:text-slate-950 dark:disabled:text-slate-500 px-8 py-3.5 rounded-xl font-extrabold flex items-center space-x-2 transition-all disabled:cursor-not-allowed shadow-lg hover:shadow-xl shadow-[#9C1A15]/20 dark:shadow-[#FFC000]/10 hover:-translate-y-0.5"
+                    className="group bg-gradient-to-r from-[#9C1A15] to-[#7a1410] hover:from-[#7a1410] hover:to-[#5c0f0c] dark:from-[#FFC000] dark:to-yellow-500 disabled:from-slate-300 disabled:to-slate-300 dark:disabled:from-slate-700 dark:disabled:to-slate-700 text-white dark:text-slate-950 dark:disabled:text-slate-500 px-8 py-3.5 rounded-xl font-extrabold flex items-center space-x-2 transition-all duration-300 ease-[cubic-bezier(0.25,0.1,0.25,1.0)] active:scale-[0.97] disabled:cursor-not-allowed shadow-lg hover:shadow-xl shadow-[#9C1A15]/20 dark:shadow-[#FFC000]/10 hover:-translate-y-0.5"
                   >
                     {isSearching ? (
                       <>
