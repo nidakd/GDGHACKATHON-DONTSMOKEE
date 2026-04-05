@@ -422,7 +422,7 @@ function App() {
             transform: `translateY(${-scrollY * 0.20}px) skewX(-10deg)` 
           }}
         >
-          Adalet Mülkün Temelidir
+          Adalet Mülkün Temelidir.
         </span>
       </div>
 
@@ -468,7 +468,7 @@ function App() {
                     <div className="flex items-center gap-2 mt-0.5">
                       <button 
                         onClick={handleChangeAccount}
-                        className="text-xs text-blue-600 hover:text-blue-800 text-left transition-colors font-medium"
+                        className="text-xs text-[#9C1A15] hover:text-[#7a1410] dark:text-red-400 dark:hover:text-red-300 text-left transition-colors font-medium"
                       >
                         Hesap Değiştir
                       </button>

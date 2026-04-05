@@ -128,16 +128,20 @@ npm run dev
 Emsal.AI/
 ├── backend/                 # Python/FastAPI Backend Dosyaları
 │   ├── main.py              # API Endpoint'leri ve SSE Akış Mantığı
+│   ├── dontsmoke-*.json     # Google Service Account Credentials
 │   └── requirements.txt     # Python bağımlılıkları
 ├── frontend/                # React/Vite Frontend Dosyaları
 │   ├── src/
-│   │   ├── components/      # UI Bileşenleri (LawTab, PrecedentTab vb.)
+│   │   ├── components/      # UI Bileşenleri (LawTab.jsx, PrecedentTab.jsx)
 │   │   ├── App.jsx          # Ana Uygulama Dosyası
-│   │   └── supabaseClient.js# Supabase Bağlantı Konfigürasyonu
+│   │   ├── index.css        # Tailwind Direktifleri ve Tema
+│   │   ├── main.jsx         # React Render Noktası
+│   │   └── supabaseClient.js# Veritabanı ve Auth Konfigürasyonu
+│   ├── index.html           # Uygulama Giriş Noktası
 │   ├── package.json         # Node.js bağımlılıkları
 │   └── vite.config.js       # Vite ayarları
 ├── scripts/                 # Kod manipülasyonu ve otomasyon scriptleri
-│   └── patch_*.py           # Kod değiştirici Python scriptleri
+│   └── *.py                 # Geliştirici scriptleri
 ├── docs.md                  # Proje takip ve notasyon dökümanı
 └── README.md                # Şu an okuduğunuz döküman
 ```
