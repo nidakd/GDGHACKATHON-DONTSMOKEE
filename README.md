@@ -28,7 +28,6 @@
   - *Kanun Motoru:* Olayın hangi kanun/madde kapsamına girdiğini tespit eder.
   - *Emsal Motoru:* En uygun kararları bulur, eşleştirir, yorumlar ve alternatif görüşler sunar.
 - **Anlık Akış (Streaming - SSE):** ChatGPT benzeri kesintisiz yanıt akışı sayesinde bekleme sürelerini ortadan kaldırır.
-- **Halüsinasyon Koruması (Grounding):** Google Search entegrasyonu sayesinde üretilen içeriklerin doğruluğu teyit edilir, uydurma hukuki verilerin önüne geçilir.
 - **Oturum ve Geçmiş Yönetimi:** Supabase destekli kullanıcı girişi ile yapılan analizler kaydedilir ve daha sonra incelenebilir.
 - **PDF Raporlama:** Bulunan yasaları ve analiz edilen emsal kararları tek tıkla PDF formatında dışa aktarma imkanı sunar.
 
@@ -40,7 +39,7 @@
 2. **Semantik İşleme:** Sistem, bu metni "kelime-kelime" değil "anlam bütünlüğü" çerçevesinde işler.
 3. **Paralel API İstekleri:**
    - İlk istek, olayın temel kanuni dayanaklarını araştırır.
-   - İkinci istek (Grounding aktif modda), ilgili Yargıtay/Danıştay kararlarını internetten tarar, olaya en uygun "baş karar" ile diğer "alternatif kararları" listeler.
+   - İkinci istek, ilgili Yargıtay/Danıştay kararlarının veri havuzunu tarar, olaya en uygun "baş karar" ile diğer "alternatif kararları" analiz ederek listeler.
 4. **Sonuçların Sunulması:** Tüm bulgular ayrıştırılmış sekmelerde anlık olarak ve okunabilir bir formatta ekrana dökülür.
 
 ---
@@ -51,7 +50,7 @@
 | :--- | :--- | :--- |
 | **Frontend** | React, Vite, Tailwind CSS | Hızlı, modern ve responsive kullanıcı arayüzü |
 | **Backend** | Python, FastAPI, Uvicorn | Yüksek performanslı, asenkron API ve SSE desteği |
-| **Yapay Zeka** | Google Gemini 2.5 Flash Lite API | Semantik arama, metin analizi ve Google Search Grounding |
+| **Yapay Zeka** | Google Gemini 2.5 Flash Lite API | Hukuki metin analizi, semantik arama ve özetleme |
 | **Veritabanı & Auth** | Supabase | Güvenli kullanıcı kimlik doğrulaması ve arama geçmişi loglama |
 | **Araçlar** | Axios, html2pdf.js, Lucide Icons | API haberleşmesi, PDF export ve arayüz ikonları |
 

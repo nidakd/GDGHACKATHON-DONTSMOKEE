@@ -338,17 +338,17 @@ function App() {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 selection:bg-[#FFC000]/30 selection:text-[#9C1A15] relative" style={{ fontFamily: '"Times New Roman", Times, serif' }}>
       {/* HOŞGELDİN TOAST (POPUP) BİLDİRİMİ */}
-      <div className={`fixed top-24 right-4 z-50 bg-white border border-[#9C1A15]/20 shadow-2xl rounded-xl p-4 flex items-center space-x-4 transform transition-all duration-500 ${showWelcome ? 'translate-x-0 opacity-100' : 'translate-x-12 opacity-0 pointer-events-none'}`}>
+      <div className={`fixed top-12 left-1/2 -translate-x-1/2 z-[100] bg-white/95 backdrop-blur-lg border border-[#9C1A15]/10 shadow-[0_8px_30px_rgb(0,0,0,0.12)] rounded-full pr-8 pl-3 py-3 flex items-center space-x-4 transform transition-all duration-700 ease-out ${showWelcome ? 'translate-y-0 opacity-100 scale-100' : '-translate-y-16 opacity-0 scale-95 pointer-events-none'}`}>
         {user?.user_metadata?.avatar_url ? (
-           <img src={user.user_metadata.avatar_url} referrerPolicy="no-referrer" alt="Avatar" className="w-12 h-12 rounded-full border border-[#FFC000] object-cover" />
+           <img src={user.user_metadata.avatar_url} referrerPolicy="no-referrer" alt="Avatar" className="w-12 h-12 rounded-full ring-2 ring-white shadow-md object-cover" />
         ) : (
-           <div className="bg-[#9C1A15]/10 p-2 rounded-full"><Sparkles className="text-[#9C1A15]" size={24} /></div>
+           <div className="bg-gradient-to-br from-[#9C1A15] to-[#c7261d] text-white p-3 rounded-full shadow-md"><Sparkles size={20} /></div>
         )}
-        <div>
-          <h4 className="text-base font-bold text-[#9C1A15]" style={{ fontFamily: '"Times New Roman", Times, serif' }}>
-            Hoşgeldin, {user?.user_metadata?.full_name?.split(' ')[0] || 'Kullanıcı'}!
+        <div className="flex flex-col justify-center">
+          <h4 className="text-base font-bold text-slate-800 tracking-tight flex items-center gap-1.5 font-sans leading-none">
+            Hoşgeldin, <span className="text-[#9C1A15]">{user?.user_metadata?.full_name?.split(' ')[0] || 'Kullanıcı'}</span> 👋
           </h4>
-          <p className="text-xs text-slate-500 font-sans mt-1">Emsal.AI'a başarıyla giriş yaptınız.</p>
+          <span className="text-xs text-slate-500 font-medium font-sans mt-1">Emsal.AI oturumun başarıyla açıldı.</span>
         </div>
       </div>
 
@@ -616,7 +616,7 @@ function App() {
       </section>
 
       {/* NASIL ÇALIŞIR & ÇİFT YÖNLÜ MOTOR */}
-      <section id="arama-motorlari" className="py-24 bg-transparent border-y border-slate-200/50 mt-12 relative z-10">
+      <section id="arama-motorlari" className="py-24 bg-transparent mt-12 relative z-10">
         <div className="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold font-serif text-slate-900 mb-4">Çift Yönlü Motor (Dual-Engine) Teknolojisi</h2>
@@ -654,7 +654,7 @@ function App() {
       </section>
 
       {/* YENİ BÖLÜM: KULLANIM ALANLARI */}
-      <section className="py-24 bg-transparent border-y border-slate-200/50 relative z-10">
+      <section className="py-24 bg-transparent relative z-10">
         <div className="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <div className="inline-flex items-center space-x-2 bg-[#9C1A15]/10 border border-[#9C1A15]/20 text-[#9C1A15] px-4 py-1.5 rounded-full text-sm font-bold mb-6">
