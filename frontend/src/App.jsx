@@ -414,7 +414,7 @@ function App() {
       </div>
 
       {/* GLOBAL SABİT ARKA PLAN YAZISI (PARALLAX + İTALİK FONT) */}
-      <div className="fixed inset-0 flex items-center justify-center pointer-events-none select-none z-0 opacity-30 dark:opacity-5 overflow-hidden w-full h-full p-4">
+      <div className="fixed inset-0 flex items-center justify-center pointer-events-none select-none z-0 opacity-30 dark:opacity-5 overflow-hidden w-full h-full p-4 print:hidden">
         <span 
           className="text-slate-300 dark:text-white font-bold italic text-center whitespace-nowrap"
           style={{ 
@@ -429,7 +429,7 @@ function App() {
 
       
       {/* HEADER / NAVBAR */}
-      <nav className="fixed top-0 w-full z-50 bg-white/90 dark:bg-slate-950/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
+      <nav className="fixed top-0 w-full z-50 bg-white/90 dark:bg-slate-950/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 print:hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-4">
@@ -504,7 +504,7 @@ function App() {
 
         <div className="max-w-[90rem] w-full mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           
-          <div className="text-center mb-8">
+          <div className="text-center mb-8 print:hidden">
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-[#9C1A15] dark:text-red-400 tracking-tight mb-4" style={{ fontFamily: '"Times New Roman", Times, serif' }}>Hukuki Olayı Anlatın</h1>
             <p className="text-xl text-slate-500 dark:text-slate-400 max-w-3xl mx-auto leading-relaxed">Kısa ama detaylı şekilde müvekkilinizin veya karşılaştığınız durumu buraya yazın. Çift yönlü motorumuz saniyeler içinde kanunları ve emsalleri bulsun.</p>
           </div>
@@ -533,7 +533,7 @@ function App() {
                 <div className="space-y-8 animate-in fade-in slide-in-from-bottom-10 duration-700">
                   
                   {/* Sonuç Özeti Başlığı ve Çıktı Butonları */}
-                  <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 pb-4 mt-8">
+                  <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 pb-4 mt-8 print:hidden">
                     <div className="flex items-center space-x-4">
                       <h3 className="text-3xl font-bold font-serif text-slate-900 dark:text-white">Analiz Raporu</h3>
                       {/* Analiz devam ediyorsa "Yazılıyor...", bittiyse "Başarıyla Tamamlandı" göster */}
@@ -613,7 +613,7 @@ function App() {
             </div>
 
             {/* ARAMA FORMU */}
-            <div className="bg-white dark:bg-slate-800 rounded-3xl shadow-2xl shadow-[#9C1A15]/5 border border-slate-100 dark:border-slate-800 p-2 overflow-hidden transition-all duration-500 ring-4 ring-[#FFC000]/10 focus-within:ring-[#FFC000]/30 mb-8 max-w-4xl mx-auto w-full">
+            <div className="bg-white dark:bg-slate-800 rounded-3xl shadow-2xl shadow-[#9C1A15]/5 border border-slate-100 dark:border-slate-800 p-2 overflow-hidden transition-all duration-500 ring-4 ring-[#FFC000]/10 focus-within:ring-[#FFC000]/30 mb-8 max-w-4xl mx-auto w-full print:hidden">
               <form onSubmit={handleSearch} className="relative">
                 <textarea
                   value={query}
@@ -659,7 +659,7 @@ function App() {
       </section>
 
       {/* NASIL ÇALIŞIR & ÇİFT YÖNLÜ MOTOR */}
-      <section id="arama-motorlari" className="py-24 bg-transparent mt-12 relative z-10">
+      <section id="arama-motorlari" className="py-24 bg-transparent mt-12 relative z-10 print:hidden">
         <div className="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold font-serif text-slate-900 dark:text-white mb-4">Çift Yönlü Motor (Dual-Engine) Teknolojisi</h2>
@@ -697,7 +697,7 @@ function App() {
       </section>
 
       {/* YENİ BÖLÜM: KULLANIM ALANLARI */}
-      <section className="py-24 bg-transparent relative z-10">
+      <section className="py-24 bg-transparent relative z-10 print:hidden">
         <div className="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <div className="inline-flex items-center space-x-2.5 bg-gradient-to-r from-[#9C1A15]/10 via-[#9C1A15]/5 to-transparent dark:from-[#FFC000]/10 dark:via-[#FFC000]/5 dark:to-transparent border border-[#9C1A15]/20 dark:border-[#FFC000]/20 text-[#9C1A15] dark:text-[#FFC000] px-5 py-2 rounded-full text-xs font-black uppercase tracking-widest shadow-sm backdrop-blur-sm mb-6">
@@ -735,7 +735,7 @@ function App() {
       </section>
 
       {/* YENİ BÖLÜM: TEKNOLOJİK ALTYAPI VE METODOLOJİ */}
-      <section className="py-24 bg-white dark:bg-slate-900 border-y border-slate-100 dark:border-slate-800 relative z-10">
+      <section className="py-24 bg-white dark:bg-slate-900 border-y border-slate-100 dark:border-slate-800 relative z-10 print:hidden">
         <RevealOnScroll>
         <div className="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center mb-16">
@@ -799,7 +799,7 @@ function App() {
       </section>
 
       {/* FOOTER */}
-      <footer className="bg-slate-900 text-slate-400 py-12 text-center text-sm border-t border-slate-800">
+      <footer className="bg-slate-900 text-slate-400 py-12 text-center text-sm border-t border-slate-800 print:hidden">
         <div className="max-w-[90rem] mx-auto px-4 flex flex-col items-center">
           <Scale size={32} className="text-slate-600 dark:text-slate-400 mb-4" />
           <p className="mb-2 text-[#FFC000] dark:text-yellow-400 font-bold tracking-wider">Emsal.AI - GDG Hackathon DONTSMOKE Takımı</p>

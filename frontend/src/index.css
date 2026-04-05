@@ -18,23 +18,26 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 @media print {
-  body * {
-    visibility: hidden;
-  }
-  #pdf-content, #pdf-content * {
-    visibility: visible;
-  }
-  #pdf-content {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    padding: 20px;
-    background: white !important;
+  /* Arkaplan renklerini zorla gösterir */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
   
-  /* Markdown metinlerinin siyah beyaz çıkması için ek koruma */
+  /* Gövde arka planını temizle, siyah metin zorunluluğu getir */
+  body {
+    background: transparent !important;
+    color: black !important;
+  }
+
+  /* Markdown metinlerinin siyah beyaz çıkması ve tam sayfa olması için */
   #pdf-content .prose * {
     color: black !important;
+  }
+  
+  /* Sayfa taşmalarını önlemek için dökümana padding ayarı */
+  @page {
+    margin: 1.5cm;
+    size: A4 portrait;
   }
 }
