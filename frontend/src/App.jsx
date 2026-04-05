@@ -667,10 +667,10 @@ function App() {
             </div>
 
             <div className="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-xl transition-shadow duration-300 relative overflow-hidden group">
-              <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity text-[#FFC000] dark:text-yellow-400">
+              <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity text-[#9C1A15] dark:text-red-400">
                 <BrainCircuit size={120} />
               </div>
-              <div className="bg-[#FFC000]/20 w-16 h-16 rounded-2xl flex items-center justify-center mb-6 text-[#9C1A15] dark:text-red-400">
+              <div className="bg-[#9C1A15]/10 dark:bg-red-500/20 w-16 h-16 rounded-2xl flex items-center justify-center mb-6 text-[#9C1A15] dark:text-red-400">
                 <BrainCircuit size={32} />
               </div>
               <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-200 mb-3">2. Emsal & Analiz Motoru <span className="text-sm font-bold bg-gradient-to-r from-[#9C1A15] to-[#7a1410] text-[#FFC000] dark:text-yellow-400 px-2 py-1 rounded-md ml-2 align-middle">Gemini</span></h3>
