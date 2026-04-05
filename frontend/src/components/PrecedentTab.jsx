@@ -4,6 +4,18 @@ import ReactMarkdown from 'react-markdown';
 export default function PrecedentTab({ markdown }) {
   if (!markdown) return <p className="text-slate-500 dark:text-slate-400">Uygun emsal karar bulunamadı.</p>;
 
+  // Try to find an Esas/Karar number to link directly, or fallback to the decision title
+  const getSearchUrl = (text) => {
+    const esasMatch = text.match(/(Esas|E\.)[^\d]*(\d{4}\/\d+)/i);
+    const query = esasMatch 
+      ? `Yargıtay Kararı Esas ${esasMatch[2]}` 
+      : text.split('\n').map(line => line.replace(/#/g, '').trim()).filter(Boolean)[0] || 'Yargıtay Emsal Kararı';
+    
+    return `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+  };
+
+  const dynamicLink = getSearchUrl(markdown);
+
   return (
     <div className="space-y-8">
       <h2 className="text-xl font-bold font-serif text-amber-700 dark:text-amber-400 mb-4 flex items-center gap-2">
@@ -31,12 +43,12 @@ export default function PrecedentTab({ markdown }) {
         {/* Bibliography / Ref Link */}
         <div className="mt-6 flex justify-end">
           <a
-            href="https://karararama.yargitay.gov.tr/"
+            href={dynamicLink}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 text-sm font-medium text-amber-700 dark:text-amber-400 hover:text-amber-900 dark:hover:text-amber-300 transition-colors"
           >
-            Detaylı Emsal Karar Kaynakçası <ExternalLink size={16} />
+            Direkt Emsal Karara Git <ExternalLink size={16} />
           </a>
         </div>
       </div>
