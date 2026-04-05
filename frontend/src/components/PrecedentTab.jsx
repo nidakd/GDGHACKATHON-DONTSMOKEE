@@ -4,13 +4,17 @@ import ReactMarkdown from 'react-markdown';
 export default function PrecedentTab({ markdown }) {
   if (!markdown) return <p className="text-slate-500 dark:text-slate-400">Uygun emsal karar bulunamadı.</p>;
 
-  // Try to find an Esas/Karar number to display for easy copying
+  // Try to find an Esas/Karar number to link directly
   const getEsasNo = (text) => {
     const esasMatch = text.match(/(Esas|E\.)[^\d]*(\d{4}\/\d+)/i);
-    return esasMatch ? esasMatch[2] : null;
+    return esasMatch ? esasMatch[2].replace(/\s+/g, '') : null;
   };
 
   const extractedEsas = getEsasNo(markdown);
+  // Yargıtay'ın web tabanlı simüle edilmiş linkine yönlendiriyoruz
+  const targetUrl = extractedEsas 
+    ? `https://karararama.yargitay.gov.tr/YargitayBilgiBankasiIstemciWeb/?esas=${encodeURIComponent(extractedEsas)}` 
+    : "https://karararama.yargitay.gov.tr/";
 
   return (
     <div className="space-y-8">
@@ -44,7 +48,7 @@ export default function PrecedentTab({ markdown }) {
             </div>
           )}
           <a
-            href="https://karararama.yargitay.gov.tr/"
+            href={targetUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 text-sm font-medium text-amber-700 dark:text-amber-400 hover:text-amber-900 dark:hover:text-amber-300 transition-colors"
